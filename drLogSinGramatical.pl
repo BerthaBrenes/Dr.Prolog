@@ -283,12 +283,11 @@ tratamiento(sarampion,antitusigenos).
 tratamiento(sarampion,reposo).
 
 pregunta_enfermedad(X,Y,Z,Enfermedad):-
-    sintoma(X),
-    sintoma(Y),
-    sintoma(Z),
     enfermedad(Enfermedad,X),
     enfermedad(Enfermedad,Y),
     enfermedad(Enfermedad,Z).
+% elimine la comprobacion de sintomas ya que en la funcion de
+% busqueSintomas compruebo que son sintomas lo que ingresa
 
 /*crea una lista de átomos. Donde SL es una lista original y L es la list *a a devolver que es la inversa de SL.
 */
@@ -303,11 +302,28 @@ toAtom([X|Cola], Y, Z):- atom_string(A, X), toAtom(Cola, [A|Y], Z).
 
 %Gramaticas libres de Contexto
 %
-drLogStart:-read(SalAux),atom_string(Sal,SalAux),saludo(Sal),pregunteSintomas.
+%Inicia el programa, no inicia hasta que reciba un saludo
+drLogStart:-read(SalAux),atom_string(Sal,SalAux),saludo(Sal),write("Hola, que lo trae a mi consultorio?"),pregunteSintomas.
 drLogStart:-write("No entiendo, repite de nuevo"),drLogStart.
 
-pregunteSintomas:-write("Hola, que lo trae a mi consultorio?"),read(OracionAux),split_string(OracionAux," "," ",Oracion),atomList(Oracion,OracionLista),write(OracionLista).
-% pregunteSintomas():-write("No entiendo, repita de
-% nuevo"),pregunteSintomas().
+% recibe una oracion, la vuelve una lista y busca los sintomas en dicha
+% oracion
+%***IMPORTANTE: LA ORACION DEBE ESTAR ENTRE COMILLAS ("")
+pregunteSintomas:-read(OracionAux),atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas).
+pregunteSintomas:-write("No entiendo, repita de nuevo lo que tiene"),pregunteSintomas.
 
+% obtiene los primeros 3 valores de la lista de sintomas y los ingresa
+% al deductor, lo que devuelve una enfermedad, la concatena con la linea
+% que dice que tiene y imprime el diagnostico.
+digaEnfermedad(ListaSintomas):-primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,Enfermedad),atom_string(Enfermedad,EnfermedadString),string_concat("Parece que tiene ",EnfermedadString,Diagnostico),write(Diagnostico).
+
+%busca sintomas en una lista
+busqueSintomas([],Y,Y). %caso base, lista vacia
+busqueSintomas([X|Cola], Y, Z):-sintoma(X),busqueSintomas(Cola,[X|Y], Z). %si el inicio es un sintoma lo mete a la lista
+busqueSintomas([X|Cola], Y, Z):-not(sintoma(X)),busqueSintomas(Cola,Y, Z). %sino, lo omite
+
+%Obtiene los objetos en las posiciones respectivas de una lista
+primero([E|_],E).
+segundo([_,E|_],E).
+tercero([_,_,E|_],E).
 
