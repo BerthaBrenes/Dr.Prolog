@@ -303,10 +303,10 @@ toAtom([X|Cola], Y, Z):- atom_string(A, X), toAtom(Cola, [A|Y], Z).
 
 %Gramaticas libres de Contexto
 %
-drLogStart:-read(SalAux),atom_string(Sal,SalAux),saludo(Sal),pregunteSintomas.
+drLogStart:-read(SalAux),atom_string(Sal,SalAux),saludo(Sal),pregunteSintomas().
 drLogStart:-write("No entiendo, repite de nuevo"),drLogStart.
 
-pregunteSintomas:-write("Hola, que lo trae a mi consultorio?"),read(OracionAux),split_string(OracionAux," "," ",Oracion),atomList(Oracion,OracionLista),write(OracionLista).
+pregunteSintomas():-write("Hola, que lo trae a mi consultorio?"),read(OracionAux),split_string(OracionAux," "," ",Oracion),atomList(Oracion,OracionLista),write(OracionLista).
 % pregunteSintomas():-write("No entiendo, repita de
 % nuevo"),pregunteSintomas().
 
