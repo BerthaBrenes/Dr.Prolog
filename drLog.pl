@@ -6,9 +6,11 @@ print(Term) :-
 %Inicio de una conversacion
 saludo([hola|S],S).
 saludo([disculpe|S],S).
-saludo([buenos_dias|S],S).
-saludo([buenas_tardes|S],S).
-saludo([buenas_noches|S],S).
+saludo([buenos|S],S).
+saludo([buenas|S],S).
+saludo([dias|S],S).
+saludo([tardes|S],S).
+saludo([noches|S],S).
 
 %Fin de una conversacion
 despedida([gracias|S],S).
@@ -57,12 +59,15 @@ sintaxis_nominal(Z,S):-articulo(Z,Y),nombre(Y,S).
 sintaxis_nominal(Z,S):-saludo(Z,Y),nombre(Y,S).
 sintaxis_nominal(Z,S):-despedida(Z,S).
 %sintaxis para verbos
-%sintaxis_verbal(Z,S):-verbo(Z,Y),sintaxis_verbal(Y,S).
-%sintaxis_verbal(Z,S):-verbo(Z,Y), sintaxis_nominal(Y,S).
-%sintaxis_verbal(Z,S):-verbo(Z,Y),pregunta_enfermedad(Y,A,X,S,E).
-sintaxis_verbal(Z,S,E):-verbo(Z,Y),sintaxis_sintoma(Y,S,E).
+sintaxis_verbal(Z,S):-verbo(Z,Y),sintaxis_verbal(Y,S).
+sintaxis_verbal(Z,S):-verbo(Z,Y), sintaxis_nominal(Y,S).
+sintaxis_verbal(Z,S):-verbo(Z,Y),sintoma(Y,S).
+%sintaxis_verbal(Z,S,E):-verbo(Z,Y),sintaxis_sintoma(Y,S,E).
 
 sintaxis_sintoma(Y,S,E):-enfermedad(E,S,Y).
+
+sintaxis_saludo(Z,S):-saludo(Z,Y),nombre(Y,S).
+sintaxis_saludo(Z,S):-saludo(Z,Y),saludo(Y,X),nombre(X,S).
 
 %sintomas
 sintoma(tos).
@@ -376,8 +381,9 @@ pregunta_enfermedad1(X,Y,Z,Enfermedad):-
 %
 %
 primerElemento([X|_],X).
-inicio(X,S):-atomic_list_concat(L,' ',X),oracion(L,[],S).
-oracion(L,S,Enfermedad):-sintaxis_nominal(L,X),sintaxis_verbal(X,S,Enfermedad).
+inicio(X):-atomic_list_concat(L,' ',X),oracion(L,[]).
+oracion(L,S):-sintaxis_saludo(L,S).
+oracion(L,S):-sintaxis_nominal(L,X),sintaxis_verbal(X,S).
 prueba:-read(X,Y,Z),pregunta_enfermedad(X,Y,Z,Enfermedad),write(Enfermedad).
 
 
