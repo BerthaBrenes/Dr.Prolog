@@ -6,9 +6,11 @@ print(Term) :-
 %Inicio de una conversacion
 saludo([hola|S],S).
 saludo([disculpe|S],S).
-saludo([buenos_dias|S],S).
-saludo([buenas_tardes|S],S).
-saludo([buenas_noches|S],S).
+saludo([buenos|S],S).
+saludo([buenas|S],S).
+saludo([dias|S],S).
+saludo([tardes|S],S).
+saludo([noches|S],S).
 
 %Fin de una conversacion
 despedida([gracias|S],S).
@@ -29,8 +31,7 @@ verbo([padeci|S],S).
 verbo([he|S],S).
 % Aqui se va a colocar la composicion de una oracion para lograr identificar las partes de la oracion.
 % Pronombres
-pronombre(él).
-pronombre(él).
+pronombre(el).
 pronombre(ella).
 pronombre(ella).
 pronombre(yo).
@@ -58,13 +59,15 @@ sintaxis_nominal(Z,S):-articulo(Z,Y),nombre(Y,S).
 sintaxis_nominal(Z,S):-saludo(Z,Y),nombre(Y,S).
 sintaxis_nominal(Z,S):-despedida(Z,S).
 %sintaxis para verbos
-sintaxis_verbal(Z,S,E):-verbo(Z,Y),sintaxis_verbal(Y,S,E).
-sintaxis_verbal(Z,S,E):-verbo(Z,Y), sintaxis_nominal(Y,S),E.
-%sintaxis_verbal(Z,S):-verbo(Z,Y), sintoma(Y,S).
-%sintaxis_verbal(Z,S):-verbo(Z,Y), sintoma(Y,X).
+sintaxis_verbal(Z,S):-verbo(Z,Y),sintaxis_verbal(Y,S).
+sintaxis_verbal(Z,S):-verbo(Z,Y), sintaxis_nominal(Y,S).
+sintaxis_verbal(Z,S):-verbo(Z,Y),sintoma(Y,S).
+%sintaxis_verbal(Z,S,E):-verbo(Z,Y),sintaxis_sintoma(Y,S,E).
 
-sintaxis_verbal(Z,S,E):-sintoma(Z,Y),sintoma(Y,A),sintoma(A,S),pregunta_enfermedad(Z,Y,A,S,E).
+sintaxis_sintoma(Y,S,E):-enfermedad(E,S,Y).
 
+sintaxis_saludo(Z,S):-saludo(Z,Y),nombre(Y,S).
+sintaxis_saludo(Z,S):-saludo(Z,Y),saludo(Y,X),nombre(X,S).
 
 %sintomas
 sintoma(tos).
@@ -72,13 +75,13 @@ sintoma(dolor).
 sintoma(diarrea).
 sintoma(sudoracion).
 sintoma(escalofrios).
-sintoma(estreñimiento).
+sintoma(estrenimiento).
 sintoma(sangrado).
 sintoma(congestion).
 sintoma(nauseas).
 sintoma(vomito).
 sintoma(estornudos).
-sintoma(migraña).
+sintoma(migrana).
 sintoma(alergia).
 sintoma(mareos).
 sintoma(deshidratacion).
@@ -108,13 +111,13 @@ sintoma([dolor|S],S).
 sintoma([diarrea|S],S).
 sintoma([sudoracion|S],S).
 sintoma([escalofrios|S],S).
-sintoma([estreñimiento|S],S).
+sintoma([estrenimiento|S],S).
 sintoma([sangrado|S],S).
 sintoma([congestion|S],S).
 sintoma([nauseas|S],S).
 sintoma([vomito|S],S).
 sintoma([estornudos|S],S).
-sintoma([migraña|S],S).
+sintoma([migrana|S],S).
 sintoma([alergia|S],S).
 sintoma([mareos|S],S).
 sintoma([deshidratacion|S],S).
@@ -162,9 +165,9 @@ dolor([todo|S],S):-dolor([cabeza|S],S), dolor([estomago|S],S),dolor([dientes|S],
 
 
 
-enfermedad(vertigo,mareo).
+enfermedad([vertigo|S],S,mareo).
 enfermedad(vertigo,desvanecimiento).
-enfermedad(vertigo,migraña).
+enfermedad(vertigo,migrana).
 enfermedad(vertigo,cansancio).
 enfermedad(vertigo,nauseas).
 
@@ -181,14 +184,14 @@ enfermedad(colitis,agrura).
 enfermedad(colitis,estomago).
 enfermedad(colitis,reflujo).
 enfermedad(colitis,diarrea).
-enfermedad(colitis,estreñimiento).
+enfermedad(colitis,estrenimiento).
 enfermedad(colitis,calambres).
 enfermedad(colitis,indigestion).
 
 enfermedad(cordales,dientes).
 enfermedad(cordales,cabeza).
 enfermedad(cordales,sangrado).
-enfermedad(cordales,migraña).
+enfermedad(cordales,migrana).
 enfermedad(cordales,calentura).
 enfermedad(cordales,fiebre).
 
@@ -215,12 +218,12 @@ enfermedad(asma,mareos).
 enfermedad(asma,cansancio).
 enfermedad(asma,desvanecimientos).
 
-enfermedad(sarampión,sarpullido).
-enfermedad(sarampión,tos).
-enfermedad(sarampión,fiebre).
-enfermedad(sarampión,calentura).
-enfermedad(sarampión,escalofrios).
-enfermedad(sarampión,todo).
+enfermedad(sarampion,sarpullido).
+enfermedad(sarampion,tos).
+enfermedad(sarampion,fiebre).
+enfermedad(sarampion,calentura).
+enfermedad(sarampion,escalofrios).
+enfermedad(sarampion,todo).
 
 pregunta(que).
 pregunta(cuando).
@@ -364,20 +367,23 @@ pregunta_enfermedad1(X,Y,Z,Enfermedad):-
     enfermedad(Enfermedad,X),
     enfermedad(Enfermedad,Y),
     enfermedad(Enfermedad,Z).
-pregunta_enfermedad(Y,A,Z,S,E):-pregunta_enfermedadex(Y,A,Z,S,E).
-pregunta_enfermedadex(X,Y,A,S,Enfermedad):-
-    sintoma(X,Y),
-    sintoma(Y,A),
-    sintoma(A,S),
-    enfermedad(Enfermedad,X),
-    enfermedad(Enfermedad,Y),
-    enfermedad(Enfermedad,A).
+
+%pregunta_enfermedad(Y,A,Z,S,Enfermedad):-
+   %sintoma(Y,A),
+    %sintoma(A,Z),
+    %sintoma(Z,S),
+    %enfermedad(Enfermedad,X),
+    %enfermedad(Enfermedad,Y),
+    %enfermedad(Enfermedad,A).
 
 
 %Gramaticas libres de Contexto
 %
 %
 primerElemento([X|_],X).
-inicio(enfermedad,X):-atomic_list_concat(L,' ',X),oracion(L,[],enfermedad).
-oracion(L,S,E):-sintaxis_nominal(L,X),sintaxis_verbal(X,S,E).
+inicio(X):-atomic_list_concat(L,' ',X),oracion(L,[]).
+oracion(L,S):-sintaxis_saludo(L,S).
+oracion(L,S):-sintaxis_nominal(L,X),sintaxis_verbal(X,S).
 prueba:-read(X,Y,Z),pregunta_enfermedad(X,Y,Z,Enfermedad),write(Enfermedad).
+
+
