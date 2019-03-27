@@ -1,8 +1,8 @@
-saludo(hola).
-saludo(disculpe).
-saludo(buenos_dias).
-saludo(buenas_tardes).
-saludo(buenas_noches).
+saludo([hola|S],S).
+saludo([disculpe|S],S).
+saludo([buenos_dias|S],S).
+saludo([buenas_tardes|S],S).
+saludo([buenas_noches|S],S).
 %verbos
 verbo(tengo).
 verbo(tenia).
@@ -16,8 +16,7 @@ verbo(padeci).
 verbo(he).
 % Aqui se va a colocar la composicion de una oracion para lograr identificar las partes de la oracion.
 % Pronombres
-pronombre(él).
-pronombre(él).
+pronombre(el).
 pronombre(ella).
 pronombre(ella).
 pronombre(yo).
@@ -34,9 +33,17 @@ nombre(doctor).
 % Separacion de las oraciones en listas
 % Lo que hace es que recibe, un parametro X y lo convierte a una lista L
 
-sintaxis_nominal(SN):-nombre(SN).
-sintaxis_nominal(SN):-articulo(A),nombre(N),append(A,N,SN).
-sintaxis_verbal(SV):-verbo(V), sintaxis_nominal(SN),append(V,SN,SV).
+sintaxis_saludo(SN,S):-saludo(SN,S).
+sintaxis_saludo(SN,S):-saludo(SN,N),saludo(N,S).
+sintaxis_nominal(Z,S):-articulo(Z,Y),nombre(Y,S).
+sintaxis_nominal(Z,S):-saludo(Z,Y),nombre(Y,S).
+sintaxis_nominal(Z,S):-despedida(Z,S).
+%sintaxis para verbos
+sintaxis_verbal(Z,S,E):-verbo(Z,Y),sintaxis_verbal(Y,S,E).
+sintaxis_verbal(Z,S,E):-verbo(Z,Y), sintaxis_nominal(Y,S),E.
+%sintaxis_verbal(Z,S):-verbo(Z,Y), sintoma(Y,S).
+%sintaxis_verbal(Z,S):-verbo(Z,Y), sintoma(Y,X).
+
 
 
 %sintomas
@@ -45,13 +52,13 @@ sintoma(dolor).
 sintoma(diarrea).
 sintoma(sudoracion).
 sintoma(escalofrios).
-sintoma(estreñimiento).
+sintoma(estrenimiento).
 sintoma(sangrado).
 sintoma(congestion).
 sintoma(nauseas).
 sintoma(vomito).
 sintoma(estornudos).
-sintoma(migraña).
+sintoma(migrana).
 sintoma(alergia).
 sintoma(mareos).
 sintoma(deshidratacion).
@@ -89,7 +96,7 @@ dolor(todo):-dolor(cabeza),dolor(estomago),dolor(dientes),dolor(muscular),dolor(
 
 enfermedad(vertigo,mareo).
 enfermedad(vertigo,desvanecimiento).
-enfermedad(vertigo,migraña).
+enfermedad(vertigo,migrana).
 enfermedad(vertigo,cansancio).
 enfermedad(vertigo,nauseas).
 
@@ -106,14 +113,14 @@ enfermedad(colitis,agrura).
 enfermedad(colitis,estomago).
 enfermedad(colitis,reflujo).
 enfermedad(colitis,diarrea).
-enfermedad(colitis,estreñimiento).
+enfermedad(colitis,estrenimiento).
 enfermedad(colitis,calambres).
 enfermedad(colitis,indigestion).
 
 enfermedad(cordales,dientes).
 enfermedad(cordales,cabeza).
 enfermedad(cordales,sangrado).
-enfermedad(cordales,migraña).
+enfermedad(cordales,migrana).
 enfermedad(cordales,calentura).
 enfermedad(cordales,fiebre).
 
@@ -140,12 +147,12 @@ enfermedad(asma,mareos).
 enfermedad(asma,cansancio).
 enfermedad(asma,desvanecimientos).
 
-enfermedad(sarampión,sarpullido).
-enfermedad(sarampión,tos).
-enfermedad(sarampión,fiebre).
-enfermedad(sarampión,calentura).
-enfermedad(sarampión,escalofrios).
-enfermedad(sarampión,todo).
+enfermedad(sarampion,sarpullido).
+enfermedad(sarampion,tos).
+enfermedad(sarampion,fiebre).
+enfermedad(sarampion,calentura).
+enfermedad(sarampion,escalofrios).
+enfermedad(sarampion,todo).
 
 pregunta(que).
 pregunta(cuando).
@@ -289,21 +296,23 @@ pregunta_enfermedad(X,Y,Z,Enfermedad):-
 % elimine la comprobacion de sintomas ya que en la funcion de
 % busqueSintomas compruebo que son sintomas lo que ingresa
 
-/*crea una lista de átomos. Donde SL es una lista original y L es la list *a a devolver que es la inversa de SL.
+/*crea una lista de ï¿½tomos. Donde SL es una lista original y L es la list *a a devolver que es la inversa de SL.
 */
 atomList(SL, L):- toAtom(SL, [], Y), reverse(L, Y).
 
-/*Una función que crea átomos para la lista átomos. Donde la primera Y es la función de parada. Y en la segunda, X es la cabeza, Cola es la cola,  Y
+/*Una funciï¿½n que crea ï¿½tomos para la lista ï¿½tomos. Donde la primera Y es la funciï¿½n de parada. Y en la segunda, X es la cabeza, Cola es la cola,  Y
  */
 toAtom([],Y, Y).
 
 toAtom([X|Cola], Y, Z):- atom_string(A, X), toAtom(Cola, [A|Y], Z).
 
 
+inicio(Salu):-atomic_list_concat(L,' ',Salu),oracion(L,[]).
+oracion(L,S):-sintaxis_saludo(L,S).
 %Gramaticas libres de Contexto
 %
 %Inicia el programa, no inicia hasta que reciba un saludo
-drLogStart:-read(SalAux),atom_string(Sal,SalAux),saludo(Sal),write("Hola, que lo trae a mi consultorio?"),pregunteSintomas.
+drLogStart:-write("Hola, este es Doctor Log"),read(SalAux),atom_string(Sal,SalAux),saludo(Sal),write("Hola, que lo trae a mi consultorio?"),pregunteSintomas.
 drLogStart:-write("No entiendo, repite de nuevo"),drLogStart.
 
 % recibe una oracion, la vuelve una lista y busca los sintomas en dicha
