@@ -1,8 +1,10 @@
 saludo([hola|S],S).
 saludo([disculpe|S],S).
-saludo([buenos_dias|S],S).
-saludo([buenas_tardes|S],S).
-saludo([buenas_noches|S],S).
+saludo([buenos|S],S).
+saludo([buenas|S],S).
+saludo([dias|S],S).
+saludo([tardes|S],S).
+saludo([noches|S],S).
 %verbos
 verbo(tengo).
 verbo(tenia).
@@ -14,6 +16,16 @@ verbo(padezco).
 verbo(padecia).
 verbo(padeci).
 verbo(he).
+verbo([tengo|S],S).
+verbo([tenia|S],S).
+verbo([tuve|S],S).
+verbo([siento|S],S).
+verbo([sentia|S],S).
+verbo([senti|S],S).
+verbo([padezco|S],S).
+verbo([padecia|S],S).
+verbo([padeci|S],S).
+verbo([he|S],S).
 % Aqui se va a colocar la composicion de una oracion para lograr identificar las partes de la oracion.
 % Pronombres
 pronombre(el).
@@ -27,22 +39,40 @@ articulo(lo).
 articulo(la).
 articulo(las).
 articulo(los).
+articulo([el|S],S).
+articulo([lo|S],S).
+articulo([la|S],S).
+articulo([las|S],S).
+articulo([los|S],S).
+articulo([me|S],S).
+articulo([un|S],S).
+articulo([una|S],S).
 
 %Nombres
 nombre(doctor).
+nombre([doctor|S],S).
+nombre([enfermedad|S],S).
+nombre([enfermo|S],S).
+nombre([enfermedad|S],S).
+nombre([mal|S],S).
 % Separacion de las oraciones en listas
 % Lo que hace es que recibe, un parametro X y lo convierte a una lista L
 
-sintaxis_saludo(SN,S):-saludo(SN,S).
-sintaxis_saludo(SN,S):-saludo(SN,N),saludo(N,S).
 sintaxis_nominal(Z,S):-articulo(Z,Y),nombre(Y,S).
 sintaxis_nominal(Z,S):-saludo(Z,Y),nombre(Y,S).
-sintaxis_nominal(Z,S):-despedida(Z,S).
+sintaxis_nominal(Z,S):-articulo(Z,S).
+sintaxis_nominal(Z,S):-nombre(Z,S).
+%sintaxis_nominal(Z,S):-despedida(Z,S).
 %sintaxis para verbos
-sintaxis_verbal(Z,S,E):-verbo(Z,Y),sintaxis_verbal(Y,S,E).
-sintaxis_verbal(Z,S,E):-verbo(Z,Y), sintaxis_nominal(Y,S),E.
-%sintaxis_verbal(Z,S):-verbo(Z,Y), sintoma(Y,S).
-%sintaxis_verbal(Z,S):-verbo(Z,Y), sintoma(Y,X).
+sintaxis_verbal(Z,S):-verbo(Z,Y),sintaxis_verbal(Y,S).
+sintaxis_verbal(Z,S):-verbo(Z,Y), sintaxis_nominal(Y,S).
+sintaxis_verbal(Z,S):-verbo(Z,Y),sintoma(Y,S).
+%sintaxis_verbal(Z,S,E):-verbo(Z,Y),sintaxis_sintoma(Y,S,E).
+
+
+
+sintaxis_saludo(Z,S):-saludo(Z,Y),nombre(Y,S).
+sintaxis_saludo(Z,S):-saludo(Z,Y),saludo(Y,X),nombre(X,S).
 
 
 
@@ -78,6 +108,37 @@ sintoma(sarpullido).
 sintoma(conjuntivitis).
 sintoma(X):-dolor(X).%dolor
 sintoma(X):-presion(X).%presion
+
+%Sistoma analis
+sintoma([tos|S],S).
+sintoma([dolor|S],S).
+sintoma([diarrea|S],S).
+sintoma([sudoracion|S],S).
+sintoma([escalofrios|S],S).
+sintoma([estrenimiento|S],S).
+sintoma([sangrado|S],S).
+sintoma([congestion|S],S).
+sintoma([nauseas|S],S).
+sintoma([vomito|S],S).
+sintoma([estornudos|S],S).
+sintoma([migrana|S],S).
+sintoma([alergia|S],S).
+sintoma([mareos|S],S).
+sintoma([deshidratacion|S],S).
+sintoma([calambre|S],S).
+sintoma([indigestion|S],S).
+sintoma([agrura|S],S).
+sintoma([reflujo|S],S).
+sintoma([calentura|S],S).
+sintoma([fiebre|S],S).
+sintoma([cansancio|S],S).
+sintoma([devanecimiento|S],S).
+sintoma([hipoglicemia|S],S).
+sintoma([hiperglicemia|S],S).
+sintoma([presion|S],S).
+sintoma([picazon|S],S).
+sintoma([sarpullido|S],S).
+sintoma([conjuntivitis|S],S).
 
 presion(baja).
 presion(alta).
@@ -307,18 +368,20 @@ toAtom([],Y, Y).
 toAtom([X|Cola], Y, Z):- atom_string(A, X), toAtom(Cola, [A|Y], Z).
 
 
-inicio(Salu):-atomic_list_concat(L,' ',Salu),oracion(L,[]).
+inicio(X):-atomic_list_concat(L,' ',X),oracion(L,[]).
 oracion(L,S):-sintaxis_saludo(L,S).
+oracion(L,S):-sintaxis_nominal(L,X),sintaxis_verbal(X,S).
 %Gramaticas libres de Contexto
 %
 %Inicia el programa, no inicia hasta que reciba un saludo
-drLogStart:-write("Hola, este es Doctor Log"),read(SalAux),atom_string(Sal,SalAux),saludo(Sal),write("Hola, que lo trae a mi consultorio?"),pregunteSintomas.
+drLogStart:-write("Hola, este es Doctor Log"),read(SalAux),inicio(SalAux),write("Hola, que lo trae a mi consultorio?"),pregunteSintomas.
 drLogStart:-write("No entiendo, repite de nuevo"),drLogStart.
 
 % recibe una oracion, la vuelve una lista y busca los sintomas en dicha
 % oracion
 %***IMPORTANTE: LA ORACION DEBE ESTAR ENTRE COMILLAS ("")
 pregunteSintomas:-read(OracionAux),atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas).
+pregunteSintomas:-read(OracionAux),inicio(OracionAux),write("que sintomas tiene"),pregunteSintomas.
 pregunteSintomas:-write("No entiendo, repita de nuevo lo que tiene"),pregunteSintomas.
 
 % obtiene los primeros 3 valores de la lista de sintomas y los ingresa
