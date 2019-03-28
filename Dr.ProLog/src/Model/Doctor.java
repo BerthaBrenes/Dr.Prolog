@@ -21,13 +21,9 @@ public class Doctor {
         Query q1 = new Query("consult", new Term[] {new Atom("src/Database/test.pl")});
         if(q1.hasSolution()){
             Variable X = new Variable("X");
-            Query q2 =
-                    new Query(
-                            "descendent_of",
-                             new Term[] {X,new Atom("ralf")}
-                    );
+            Query q2 =new Query("descendent_of", new Term[] {X,new Atom("ralf")});
+            
             java.util.Map<String,Term> solution;
-
             solution = q2.oneSolution();
             return solution.get("X").name();
         }
