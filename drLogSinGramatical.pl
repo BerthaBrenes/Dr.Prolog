@@ -116,8 +116,8 @@ sintaxis_saludo(Z,S):-saludo(Z,Y),saludo(Y,X),nombre(X,S).
 sintaxis_despedida(Z,S):-despedida(Z,Y),nombre(Y,S).
 sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,S).
 sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,S),despedida(Z,Y),despedida(Y,X).
-sintaxis_despedida(Z,S):-despedida(Z,Y),nombre(X,S),despedida(Z,Y),despedida(Y,X).
-sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,S),despedida(Y,X).
+sintaxis_despedida(Z,S):-despedida(Z,Y),nombre(Y,X),despedida(X,V),despedida(V,S).
+sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,V),despedida(V,S).
 
 %sintomas
 sintoma(tos).
