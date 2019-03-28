@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Dr.Prolog.iml" filepath="$PROJECT_DIR$/Dr.Prolog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Dr.Prolog.iml" filepath="$PROJECT_DIR$/.idea/Dr.Prolog.iml" />
     </modules>
   </component>
 </project>
