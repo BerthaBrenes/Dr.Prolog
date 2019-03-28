@@ -1,3 +1,9 @@
+print(Term) :-
+    write_term(Term, [ portray(true),
+                       numbervars(true),
+                       quoted(true)
+                     ]).
+%saludo
 saludo([hola|S],S).
 saludo([disculpe|S],S).
 saludo([buenos|S],S).
@@ -5,6 +11,19 @@ saludo([buenas|S],S).
 saludo([dias|S],S).
 saludo([tardes|S],S).
 saludo([noches|S],S).
+
+%despedida
+despedida([adios|S],S).
+despedida([chao|S],S).
+despedida([hasta|S],S).
+despedida([luego|S],S).
+despedida([muchas|S],S).
+despedida([gracias|S],S).
+despedida([buenos|S],S).
+despedida([buenas|S],S).
+despedida([dias|S],S).
+despedida([tardes|S],S).
+despedida([noches|S],S).
 %verbos
 verbo(tengo).
 verbo(tenia).
@@ -26,12 +45,27 @@ verbo([padezco|S],S).
 verbo([padecia|S],S).
 verbo([padeci|S],S).
 verbo([he|S],S).
+verbo([tomar|S],S).
+verbo([conseguir|S],S).
+verbo([consigo|S],S).
+verbo([tomo|S],S).
+verbo([compro|S],S).
+verbo([prevenirla|S],S).
+verbo([causa|S],S).
+verbo([es|S],S).
+
 % Aqui se va a colocar la composicion de una oracion para lograr identificar las partes de la oracion.
 % Pronombres
 pronombre(el).
 pronombre(ella).
 pronombre(ella).
 pronombre(yo).
+
+%preguntas 
+preguntas([que|S],S).
+preguntas([como|S],S).
+preguntas([cuando|S],S).
+preguntas([donde|S],S).
 
 
 % Articulos
@@ -47,6 +81,9 @@ articulo([los|S],S).
 articulo([me|S],S).
 articulo([un|S],S).
 articulo([una|S],S).
+articulo([debo|S],S).
+articulo([puedo|S],S).
+
 
 %Nombres
 nombre(doctor).
@@ -58,23 +95,29 @@ nombre([mal|S],S).
 % Separacion de las oraciones en listas
 % Lo que hace es que recibe, un parametro X y lo convierte a una lista L
 
+%sintaxis nominal 
+
 sintaxis_nominal(Z,S):-articulo(Z,Y),nombre(Y,S).
 sintaxis_nominal(Z,S):-saludo(Z,Y),nombre(Y,S).
 sintaxis_nominal(Z,S):-articulo(Z,S).
 sintaxis_nominal(Z,S):-nombre(Z,S).
 %sintaxis_nominal(Z,S):-despedida(Z,S).
+
 %sintaxis para verbos
 sintaxis_verbal(Z,S):-verbo(Z,Y),sintaxis_verbal(Y,S).
 sintaxis_verbal(Z,S):-verbo(Z,Y), sintaxis_nominal(Y,S).
 sintaxis_verbal(Z,S):-verbo(Z,Y),sintoma(Y,S).
-%sintaxis_verbal(Z,S,E):-verbo(Z,Y),sintaxis_sintoma(Y,S,E).
-
-
-
+sintaxis_verbal(Z,S):-preguntas(Z,X),articulo(X,Y),verbo(Y,S).
+sintaxis_verbal(Z,S):-preguntas(Z,X),verbo(X,Y),articulo(Y,V),verbo(V,S).
+%sintaxis saludo
 sintaxis_saludo(Z,S):-saludo(Z,Y),nombre(Y,S).
 sintaxis_saludo(Z,S):-saludo(Z,Y),saludo(Y,X),nombre(X,S).
 
-
+sintaxis_despedida(Z,S):-despedida(Z,Y),nombre(Y,S).
+sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,S).
+sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,S),despedida(Z,Y),despedida(Y,X).
+sintaxis_despedida(Z,S):-despedida(Z,Y),nombre(X,S),despedida(Z,Y),despedida(Y,X).
+sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,S),despedida(Y,X).
 
 %sintomas
 sintoma(tos).
@@ -366,11 +409,16 @@ atomList(SL, L):- toAtom(SL, [], Y), reverse(L, Y).
 toAtom([],Y, Y).
 
 toAtom([X|Cola], Y, Z):- atom_string(A, X), toAtom(Cola, [A|Y], Z).
+digaRecomendacion(Enfermedad):-read(OracionAux),inicio(OracionAux),tratamiento(Enfermedad,X),string_concat("Vas a tomar: ",X,Tratamiento),write(Tratamiento),digaCausa(Enfermedad).
+digaCausa(Enfermedad):-read(OracionAux),inicio(OracionAux),causa(Enfermedad,X),string_concat("La causa es: ",X,Causa),write(Causa),digaRecomendacion.
+digaTratamiento(Enfermedad):-read(OracionAux),inicio(OracionAux),recomendacion(Enfermedad,X),string_concat("El tratamiento es: ",X,Causa),write(Causa),read(despedida),inicio(despedida).
 
 
 inicio(X):-atomic_list_concat(L,' ',X),oracion(L,[]).
 oracion(L,S):-sintaxis_saludo(L,S).
 oracion(L,S):-sintaxis_nominal(L,X),sintaxis_verbal(X,S).
+oracion(L,S):-sintaxis_verbal(L,S).
+oracion(L,S):-sintaxis_despedida(L,S).
 %Gramaticas libres de Contexto
 %
 %Inicia el programa, no inicia hasta que reciba un saludo
@@ -387,7 +435,7 @@ pregunteSintomas:-write("No entiendo, repita de nuevo lo que tiene"),pregunteSin
 % obtiene los primeros 3 valores de la lista de sintomas y los ingresa
 % al deductor, lo que devuelve una enfermedad, la concatena con la linea
 % que dice que tiene y imprime el diagnostico.
-digaEnfermedad(ListaSintomas):-primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,Enfermedad),atom_string(Enfermedad,EnfermedadString),string_concat("Parece que tiene ",EnfermedadString,Diagnostico),write(Diagnostico).
+digaEnfermedad(ListaSintomas):-primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,Enfermedad),atom_string(Enfermedad,EnfermedadString),string_concat("Parece que tiene ",EnfermedadString,Diagnostico),write(Diagnostico),digaRecomendacion(Enfermedad).
 
 %busca sintomas en una lista
 busqueSintomas([],Y,Y). %caso base, lista vacia
