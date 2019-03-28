@@ -5,6 +5,7 @@ import org.jpl7.Query;
 import org.jpl7.Term;
 import org.jpl7.Variable;
 
+
 public class Doctor {
     private static Doctor doctor = null;
     private Doctor(){

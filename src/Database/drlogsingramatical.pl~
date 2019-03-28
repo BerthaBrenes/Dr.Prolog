@@ -312,13 +312,17 @@ drLog(Paciente,Doctor):-drLogStart(Paciente,Doctor).
 drLogStart(SalAux,SalDoc):-atom_string(Sal,SalAux),saludo(Sal),saludoDoctor(SalDoc).
 drLogStart(SalAux,SalDoc):-atom_string(Sal,SalAux),not(saludo(Sal)),noEntiendo(SalDoc).
 
-
 drLogStart:-read(SalAux),atom_string(Sal,SalAux),saludo(Sal),write("Hola, que lo trae a mi consultorio?"),pregunteSintomas.
 drLogStart:-write("No entiendo, repite de nuevo"),drLogStart.
 
 % recibe una oracion, la vuelve una lista y busca los sintomas en dicha
 % oracion
 %***IMPORTANTE: LA ORACION DEBE ESTAR ENTRE COMILLAS ("")
+
+drLogSintomas(Paciente,Doctor).
+
+pregunteSintomas(OracionAux,OracionDoc):-atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas,OracionDoc).
+
 pregunteSintomas:-read(OracionAux),atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas).
 pregunteSintomas:-write("No entiendo, repita de nuevo lo que tiene"),pregunteSintomas.
 
