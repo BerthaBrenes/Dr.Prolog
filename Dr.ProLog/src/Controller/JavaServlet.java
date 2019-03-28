@@ -2,7 +2,6 @@ package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -38,9 +37,8 @@ public class JavaServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-        
-        
+		// TODO Auto-generated method stub
+		        
 	}
 
 	/**
@@ -48,24 +46,29 @@ public class JavaServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub
-				//response.getWriter().append("Server at: ").append(request.getContextPath());
-		        //Especificamos la respuestas
-		        PrintWriter salida = response.getWriter();
-
-		        //Generar respuesta de la petición
-		        salida.println("<html><body>");
-
-		        salida.println("<h1 style='text-align:center'>");
-		        salida.println(controller.updateView(""));
-
-		        salida.println("</h1>");
-		        for (int i=0; i<7;i++)
-		            salida.println("");
-
-		        salida.println("Fecha y hora:" + new Date());
-		        salida.println("<body><html>");
+		//De Fijo
 		doGet(request, response);
+		response.setContentType("text/html");
+		
+		//response.getWriter().append("Server at: ").append(request.getContextPath());
+        //Especificamos la respuestas
+        PrintWriter salida = response.getWriter();
+
+        //Generar respuesta de la petición
+        salida.println("<html><body>");
+        //Texto que ingresa el usario
+        String userentry = request.getParameter("usermsg");
+        String docPhrase = controller.updateView(userentry);
+        salida.println(docPhrase);
+        salida.println("<h1 style='text-align:center'>");
+        //salida.println(controller.updateView(""));
+
+        salida.println("</h1>");
+        for (int i=0; i<7;i++)
+            salida.println("");
+
+        salida.println("Maincra " + request.getParameter("usermsg"));
+        salida.println("<body><html>");
 	}
 
 }
