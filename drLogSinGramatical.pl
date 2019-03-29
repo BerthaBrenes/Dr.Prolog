@@ -73,7 +73,6 @@ articulo(la).
 articulo(las).
 articulo(los).
 articulo([el|S],S).
-For help, use ?- help(
 articulo([lo|S],S).
 articulo([la|S],S).
 articulo([las|S],S).
@@ -337,14 +336,14 @@ toAtom([],Y, Y).
 toAtom([X|Cola], Y, Z):- atom_string(A, X), toAtom(Cola, [A|Y], Z).
 digaRecomendacion(Enfermedad):-read(OracionAux),inicio(OracionAux),tratamiento(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("Vas a tomar: ",X,Tratamiento),write(Tratamiento),digaCausa(Enfermedad).
 digaCausa(Enfermedad):-read(OracionAux),inicio(OracionAux),causa(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La causa es: ",X,Causa),write(Causa),digaConsejos(Enfermedad).
-digaConsejos(Enfermedad):-read(OracionAux),inicio(OracionAux),prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("El recomendacion es: ",X,Consejo),write(Consejo),read(despedida),oracionDespedida(despedida,[]),write("hasta luego").
-
+digaConsejos(Enfermedad):-read(OracionAux),inicio(OracionAux),prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("El recomendacion es: ",X,Consejo),write(Consejo),despedirse.
+despedirse:-read(despedida),inicio(despedida),write("hasta luego").
 
 inicio(X):-atomic_list_concat(L,' ',X),oracion(L,[]).
 oracion(L,S):-sintaxis_saludo(L,S).
 oracion(L,S):-sintaxis_nominal(L,X),sintaxis_verbal(X,S).
 oracion(L,S):-sintaxis_verbal(L,S).
-oracionDespedida(X,S):-atomic_list_concat(L,' ',X),sintaxis_despedida(L,S).
+oracion(L,S):-sintaxis_despedida(L,S).
 
 %Gramaticas libres de Contexto
 %
