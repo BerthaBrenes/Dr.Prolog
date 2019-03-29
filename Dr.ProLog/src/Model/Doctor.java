@@ -18,13 +18,15 @@ public class Doctor {
         }
     }
     public String getPhrase(String patientPhrase){
-        Query q1 = new Query("consult", new Term[] {new Atom("src/Database/drLogSinGramatical.pl")});
+    	//Codigo a La Base de Datos
+        Query q1 = new Query("consult", new Term[] {new Atom("src/Model/test.pl")});
         if(q1.hasSolution()){
             Variable X = new Variable("X");
             Query q2 =new Query("descendent_of", new Term[] {X,new Atom("ralf")});
             
             java.util.Map<String,Term> solution;
             solution = q2.oneSolution();
+            System.out.println(patientPhrase);
             return solution.get("X").name();
         }
         else{
