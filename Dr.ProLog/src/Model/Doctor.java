@@ -5,15 +5,15 @@ import org.jpl7.Query;
 import org.jpl7.Term;
 import org.jpl7.Variable;
 
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.Arrays;
+import java.util.LinkedList;
 
 public class Doctor {
     private static Doctor doctor = null;
-    private TreeMap sicknesses; 
+    private LinkedList<Sickness> sicknesses; 
     private String direc = "C:\\Users\\gababarca\\Desktop\\Dr.Prolog\\Dr.ProLog\\src\\Model\\drLogSinGramatical.pl";
     private Doctor(){
-    	this.sicknesses = new TreeMap(new SicknessComparator());
+    	this.setSicknesses(new LinkedList<Sickness>()); ;
     }
     public static Doctor singleton(){
         if (doctor == null)
@@ -31,10 +31,8 @@ public class Doctor {
             
             java.util.Map<String,Term> solution;
             solution = q2.oneSolution();
-            if (solution == null) {
-            	//Buscar en el arbol
-            	//Si no está en el arbol manda null
-            	return null;
+            if (solution == null) {       	
+            	return SearchBySymptoms(evaluate);
             }else {
             	return solution.get("X").name();
             }
@@ -52,13 +50,23 @@ public class Doctor {
             
             java.util.Map<String,Term> solution;
             solution = q2.oneSolution();
-            return "Causa: " + solution.get("X").name();
+            if(solution == null) {
+            	for(Sickness sick : sicknesses)
+            	{
+            		if (sick.getName() == sickness)
+            			return sick.getCause();
+            	}
+            	return null;
+            }else {
+            	return "Causa: " + solution.get("X").name();
+            }           
         }
         else{
             return "Database not connected";
         }
 	}
-    public String getSymptom(String sickness) {
+
+	public String getSymptom(String sickness) {
     	Query q1 = new Query("consult", new Term[] {new Atom(direc)});
         if(q1.hasSolution()){
             Variable X = new Variable("X");
@@ -70,7 +78,16 @@ public class Doctor {
           		solution = q2.nextSolution();
                 synthoms+=solution.get("X");
             }
-            return "Sintomas: " + synthoms;
+            if(synthoms == "") {
+            	for(Sickness sick : sicknesses)
+            	{
+            		if (sick.getName() == sickness)
+            			return sick.getSymptom().toString();
+            	}
+            	return null;
+            }else {
+            	return "Sintomas: " + synthoms;
+            }
         }
         else{
             return "Database not connected";
@@ -85,7 +102,16 @@ public class Doctor {
             
             java.util.Map<String,Term> solution;
             solution = q2.oneSolution();
-            return "Tratamiento: "+solution.get("X").name();
+            if(solution == null) {
+            	for(Sickness sick : sicknesses)
+            	{
+            		if (sick.getName() == sickness)
+            			return sick.getTreatment();
+            	}
+            	return null;
+            }else {
+            	return "Tratamiento: "+solution.get("X").name();
+            }
         }
         else{
             return "Database not connected";
@@ -99,11 +125,39 @@ public class Doctor {
             
             java.util.Map<String,Term> solution;
             solution = q2.oneSolution();
-            return "Recomendaciones y Precauciones: "+solution.get("X").name();
+            if(solution == null) {
+            	for(Sickness sick : sicknesses)
+            	{
+            		if (sick.getName() == sickness)
+            			return sick.getRecomendation();
+            	}
+            	return null;
+            }else {
+            	return "Recomendaciones y Precauciones: "+solution.get("X").name();
+            }
         }
         else{
             return "Database not connected";
         }
+	}
+	public LinkedList<Sickness> getSicknesses() {
+		return sicknesses;
+	}
+	public void setSicknesses(LinkedList<Sickness> sicknesses) {
+		this.sicknesses = sicknesses;
+	}
+	private String SearchBySymptoms(String evaluate) {
+		String [] sickness = evaluate.split(",");
+		
+		for (Sickness sick : sicknesses) {
+			Object[] arr1 = {sick.getSymptom()};
+			Object[] arr2 = {sickness};
+			if (Arrays.deepEquals(arr1,arr2))
+				return sick.getName();
+		}
+		return null;
+			
+			
 	}
     
 }

@@ -3,12 +3,12 @@ package Model;
 public class Sickness {
 	private String Name;
 	private String Cause;
-	private String Symptom;
+	private String[] Symptom;
 	private String Treatment;
 	private String Recomendation;
 	
 	
-	public Sickness(String Name, String Cause, String Symptom, String Treatment,String Recomendation){
+	public Sickness(String Name, String Cause, String[] Symptom, String Treatment,String Recomendation){
 		this.Name = Name;
 		this.Cause = Cause;
 		this.Symptom = Symptom;
@@ -21,10 +21,10 @@ public class Sickness {
 	public void setName(String name) {
 		Name = name;
 	}
-	public String getSymptom() {
+	public String[] getSymptom() {
 		return Symptom;
 	}
-	public void setSymptom(String symptom) {
+	public void setSymptom(String[] symptom) {
 		Symptom = symptom;
 	}
 	public String getRecomendation() {
