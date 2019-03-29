@@ -10,7 +10,7 @@
 </head>
 <body>
 	<c:forEach var = "tempEnfermedad" items = "${lista_enfermedades}">
-		${tempEnfermedad}
-	</c:forEach>
+		${tempEnfermedad}<br><br>
+	</c:forEach>	
 </body>
 </html>

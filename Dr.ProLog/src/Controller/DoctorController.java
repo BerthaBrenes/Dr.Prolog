@@ -43,16 +43,27 @@ public class DoctorController extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 		
-		String[] Enfermedades = new String[6];
+		String[] Enfermedades = new String[5];
 		
-		Enfermedades[0] = doctor.getPhrase(request.getParameter("usermsg"));
-		request.setAttribute("lista_enfermedades", Enfermedades);
 		
-		RequestDispatcher myDispatcher = request.getRequestDispatcher("/JavaView.jsp");
+		Enfermedades[0] = doctor.getSickness(request.getParameter("usermsg"));//Enfermedad
+		if (Enfermedades[0] == null) {
+			RequestDispatcher myDispatcher = request.getRequestDispatcher("/Form.jsp");
+			//Enviar a JSP
+			myDispatcher.forward(request, response);
+		}
+		else {
+			Enfermedades[1] = doctor.getCause(request.getParameter(Enfermedades[0]));//Causa
+			Enfermedades[2] = doctor.getSymptom(request.getParameter(Enfermedades[0]));//Sintomas
+			Enfermedades[3] = doctor.getTreatment(request.getParameter(Enfermedades[0]));//Tratamiento
+			Enfermedades[4] = doctor.getRecomendations(request.getParameter(Enfermedades[0]));//Recomendaciones Y Prevenciones
+			request.setAttribute("lista_enfermedades", Enfermedades);
+			
+			RequestDispatcher myDispatcher = request.getRequestDispatcher("/JavaView.jsp");			
+			//Enviar a JSP
+			myDispatcher.forward(request, response);
+		}
 		
-		//Enviar a JSP
-		
-		myDispatcher.forward(request, response);
 	}
 
 }

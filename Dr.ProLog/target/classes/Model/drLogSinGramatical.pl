@@ -1,11 +1,29 @@
-saludo(hola).
-saludo(disculpe).
-saludo(buenos_dias).
-saludo(buenas_tardes).
-saludo(buenas_noches).
+print(Term) :-
+    write_term(Term, [ portray(true),
+                       numbervars(true),
+                       quoted(true)
+                     ]).
+%saludo
+saludo([hola|S],S).
+saludo([disculpe|S],S).
+saludo([buenos|S],S).
+saludo([buenas|S],S).
+saludo([dias|S],S).
+saludo([tardes|S],S).
+saludo([noches|S],S).
 
-saludoDoctor(hola_que_lo_trae_a_mi_consultorio).
-noEntiendo(no_entiendo_lo_que_me_dice_por_favor_repita).
+%despedida
+despedida([adios|S],S).
+despedida([chao|S],S).
+despedida([hasta|S],S).
+despedida([luego|S],S).
+despedida([muchas|S],S).
+despedida([gracias|S],S).
+despedida([buenos|S],S).
+despedida([buenas|S],S).
+despedida([dias|S],S).
+despedida([tardes|S],S).
+despedida([noches|S],S).
 %verbos
 verbo(tengo).
 verbo(tenia).
@@ -17,13 +35,36 @@ verbo(padezco).
 verbo(padecia).
 verbo(padeci).
 verbo(he).
-% Aqui se va a colocar la composicion de una oracion para lograr identificar las partes de la oracion.
-% Pronombres
-pronombre(él).
-pronombre(él).
-pronombre(ella).
-pronombre(ella).
-pronombre(yo).
+verbo([tengo|S],S).
+verbo([tenia|S],S).
+verbo([tuve|S],S).
+verbo([siento|S],S).
+verbo([sentia|S],S).
+verbo([senti|S],S).
+verbo([padezco|S],S).
+verbo([padecia|S],S).
+verbo([padeci|S],S).
+verbo([he|S],S).
+verbo([tomar|S],S).
+verbo([conseguir|S],S).
+verbo([consigo|S],S).
+verbo([tomo|S],S).
+verbo([compro|S],S).
+verbo([prevenirla|S],S).
+verbo([causa|S],S).
+verbo([provoca|S],S).
+verbo([provoco|S],S).
+verbo([es|S],S).
+verbo([prevenir|S],S).
+verbo([puedo|S],S).
+
+
+%preguntas
+preguntas([que|S],S).
+preguntas([como|S],S).
+preguntas([cuando|S],S).
+preguntas([donde|S],S).
+preguntas([cual|S],S).
 
 
 % Articulos
@@ -31,16 +72,55 @@ articulo(lo).
 articulo(la).
 articulo(las).
 articulo(los).
+articulo([el|S],S).
+articulo([lo|S],S).
+articulo([la|S],S).
+articulo([las|S],S).
+articulo([los|S],S).
+articulo([me|S],S).
+articulo([un|S],S).
+articulo([una|S],S).
+articulo([debo|S],S).
+articulo([el|S],S).
+
 
 %Nombres
 nombre(doctor).
+nombre([doctor|S],S).
+nombre([enfermedad|S],S).
+nombre([enfermo|S],S).
+nombre([enfermedad|S],S).
+nombre([mal|S],S).
 % Separacion de las oraciones en listas
 % Lo que hace es que recibe, un parametro X y lo convierte a una lista L
 
-sintaxis_nominal(SN):-nombre(SN).
-sintaxis_nominal(SN):-articulo(A),nombre(N),append(A,N,SN).
-sintaxis_verbal(SV):-verbo(V), sintaxis_nominal(SN),append(V,SN,SV).
+%sintaxis nominal
 
+sintaxis_nominal(Z,S):-articulo(Z,Y),nombre(Y,S).
+sintaxis_nominal(Z,S):-saludo(Z,Y),nombre(Y,S).
+sintaxis_nominal(Z,S):-articulo(Z,S).
+sintaxis_nominal(Z,S):-nombre(Z,S).
+%sintaxis_nominal(Z,S):-despedida(Z,S).
+
+%sintaxis para verbos
+sintaxis_verbal(Z,S):-verbo(Z,Y),sintaxis_verbal(Y,S).
+sintaxis_verbal(Z,S):-verbo(Z,Y), sintaxis_nominal(Y,S).
+sintaxis_verbal(Z,S):-verbo(Z,Y),sintoma(Y,S).
+
+%sintaxis preguntas
+sintaxis_verbal(Z,S):-preguntas(Z,X),articulo(X,Y),verbo(Y,S).
+sintaxis_verbal(Z,S):-preguntas(Z,X),verbo(X,Y),articulo(Y,V),verbo(V,S).
+sintaxis_verbal(Z,S):-preguntas(Z,X),verbo(X,Y),verbo(Y,S).
+sintaxis_verbal(Z,S):-preguntas(Z,X),articulo(X,Y),verbo(Y,V),verbo(V,S).
+%sintaxis saludo
+sintaxis_saludo(Z,S):-saludo(Z,Y),nombre(Y,S).
+sintaxis_saludo(Z,S):-saludo(Z,Y),saludo(Y,X),nombre(X,S).
+
+sintaxis_despedida(Z,S):-despedida(Z,Y),nombre(Y,S).
+sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,S).
+sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,V),despedida(V,N),despedida(N,S).
+sintaxis_despedida(Z,S):-despedida(Z,Y),nombre(Y,X),despedida(X,V),despedida(V,S).
+sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,V),despedida(V,S).
 
 %sintomas
 sintoma(tos).
@@ -48,13 +128,13 @@ sintoma(dolor).
 sintoma(diarrea).
 sintoma(sudoracion).
 sintoma(escalofrios).
-sintoma(estreñimiento).
+sintoma(estrenimiento).
 sintoma(sangrado).
 sintoma(congestion).
 sintoma(nauseas).
 sintoma(vomito).
 sintoma(estornudos).
-sintoma(migraña).
+sintoma(migrana).
 sintoma(alergia).
 sintoma(mareos).
 sintoma(deshidratacion).
@@ -75,6 +155,37 @@ sintoma(conjuntivitis).
 sintoma(X):-dolor(X).%dolor
 sintoma(X):-presion(X).%presion
 
+%Sistoma analis
+sintoma([tos|S],S).
+sintoma([dolor|S],S).
+sintoma([diarrea|S],S).
+sintoma([sudoracion|S],S).
+sintoma([escalofrios|S],S).
+sintoma([estrenimiento|S],S).
+sintoma([sangrado|S],S).
+sintoma([congestion|S],S).
+sintoma([nauseas|S],S).
+sintoma([vomito|S],S).
+sintoma([estornudos|S],S).
+sintoma([migrana|S],S).
+sintoma([alergia|S],S).
+sintoma([mareos|S],S).
+sintoma([deshidratacion|S],S).
+sintoma([calambre|S],S).
+sintoma([indigestion|S],S).
+sintoma([agrura|S],S).
+sintoma([reflujo|S],S).
+sintoma([calentura|S],S).
+sintoma([fiebre|S],S).
+sintoma([cansancio|S],S).
+sintoma([devanecimiento|S],S).
+sintoma([hipoglicemia|S],S).
+sintoma([hiperglicemia|S],S).
+sintoma([presion|S],S).
+sintoma([picazon|S],S).
+sintoma([sarpullido|S],S).
+sintoma([conjuntivitis|S],S).
+
 presion(baja).
 presion(alta).
 %dolor(parte del cuerpo).
@@ -92,7 +203,7 @@ dolor(todo):-dolor(cabeza),dolor(estomago),dolor(dientes),dolor(muscular),dolor(
 
 enfermedad(vertigo,mareo).
 enfermedad(vertigo,desvanecimiento).
-enfermedad(vertigo,migraña).
+enfermedad(vertigo,migrana).
 enfermedad(vertigo,cansancio).
 enfermedad(vertigo,nauseas).
 
@@ -109,14 +220,14 @@ enfermedad(colitis,agrura).
 enfermedad(colitis,estomago).
 enfermedad(colitis,reflujo).
 enfermedad(colitis,diarrea).
-enfermedad(colitis,estreñimiento).
+enfermedad(colitis,estrenimiento).
 enfermedad(colitis,calambres).
 enfermedad(colitis,indigestion).
 
 enfermedad(cordales,dientes).
 enfermedad(cordales,cabeza).
 enfermedad(cordales,sangrado).
-enfermedad(cordales,migraña).
+enfermedad(cordales,migrana).
 enfermedad(cordales,calentura).
 enfermedad(cordales,fiebre).
 
@@ -143,12 +254,12 @@ enfermedad(asma,mareos).
 enfermedad(asma,cansancio).
 enfermedad(asma,desvanecimientos).
 
-enfermedad(sarampión,sarpullido).
-enfermedad(sarampión,tos).
-enfermedad(sarampión,fiebre).
-enfermedad(sarampión,calentura).
-enfermedad(sarampión,escalofrios).
-enfermedad(sarampión,todo).
+enfermedad(sarampion,sarpullido).
+enfermedad(sarampion,tos).
+enfermedad(sarampion,fiebre).
+enfermedad(sarampion,calentura).
+enfermedad(sarampion,escalofrios).
+enfermedad(sarampion,todo).
 
 pregunta(que).
 pregunta(cuando).
@@ -157,133 +268,55 @@ pregunta(donde).
 pregunta(cuanto).
 
 %prevencion
-prevencion(vertigo,no_salir_de_la_casa).
-prevencion(vertigo,someterse_a_revisiones_auditivas_periodicas).
-prevencion(vertigo,mantener_una_buena_postura_corporal).
+prevencion(vertigo,[no,salir,de,la,casa,someterse,a,revisiones,auditivas,periodicas,mantener,una,buena,postura,corporal,evitar,cambios,subitos,de,posicion]).
 
-prevencion(gripe,no_estar_cerca_de_la_suciedad).
-prevencion(gripe,tener_todas_las_vacunas_al_dia).
-prevencion(gripe,evitar_contacto_con_personas_con_gripe_o_fiebre).
-prevencion(gripe,abrigarse_bien).
+prevencion(colitis,[mantener,una,dieta,balanceada,controlar,el,estres,tomar,al,menos,8,vasos,de,liquido,al,dia,mantener,horario,fijo,de,comidas]).
 
-prevencion(colitis,mantener_una_dieta_balanceada).
-prevencion(colitis,evitar_el_tabaco).
-prevencion(colitis,controlar_el_estres).
-prevencion(colitis,no_dejar_tratamientos_a_medias).
+prevencion(dengue,[evitar,recipientes,con,agua,acomulada,utilizar,repelentes,evitar,automedicarse,por,ultimo,beber,abundantes,liquidos]).
 
-prevencion(cordales,no_tomar_cosas_calientes).
+prevencion(zika,[evitar,recipientes,con,agua,acomulada,utilizar,repelentes,evitar,automedicarse,por,ultimo,beber,abundantes,liquidos]).
 
-prevencion(dengue,evitar_recipientes_con_agua_acomulada).
-prevencion(dengue,instalar_mosquiteros).
-prevencion(dengue,utilizar_repelentes).
+prevencion(asma,[evitar,el,polvo,cubrir,las,camas,con,fundas,antialergicas,mantener,los,niveles,de,humedad,bajos,seguir,el,tratamiento,recetado,siempre,utilizar,el,inhalador,correctamente]).
 
-prevencion(zika,evitar_recipientes_con_agua_acumulada).
-prevencion(zika,instalar_mosquiteros).
-prevencion(zika,utilizar_repelentes).
+prevencion(sarampion,[evitar,contacto,con,personas,contagiadas,mantener,vacunas,al,dia,beber,abundantes,liquidos,evitar,ir,a,lugares,concurridos]).
 
-prevencion(asma,evitar_el_polvo).
-prevencion(asma,realizar_ejercicios_respiratoris_habituales).
-prevencion(asma,cubrir_las_camas_con_fundas_antialergicas).
-prevencion(asma,mantener_los_niveles_de_humedad_bajos).
+prevencion(gripe,[descansar,beber,abundante,liquidos,evitar,consumo,de,tabaco,o,alcohol,y,comer,frutas]).
 
-prevencion(sarampion,evitar_contacto_con_personas_contagiadas).
-prevencion(sarampion,mantener_vacunas_al_dia).
-
-%recomendacion
-recomendacion(vertigo,mantenerse_quieto).
-recomendacion(vertigo,sentarse_o_acostarse_durante_los_sintomas).
-recomendacion(vertigo,evitar_cambios_subitos_de_posicion).
-recomendacion(vertigo,no_intentar_leer_durante_los_sintomas).
-recomendacion(vertigo,evitar_las_luces_brillantes).
-
-recomendacion(gripe,descansar).
-recomendacion(gripe,beber_abundantes_liquidos).
-recomendacion(gripe,evitar_el_consumo_de_tabaco_y_alcohol).
-recomendacion(gripe,comer_frutas_y_verduras).
-
-recomendacion(colitis,tomar_al_menos_8_vasos_de_liquido_al_dia).
-recomendacion(colitis,masticar_bien).
-recomendacion(colitis,mantener_horario_fijo_de_comidas).
-recomendacion(colitis,realizar_ejercicio).
-
-recomendacion(cordales,aplicar_hielo_en_la_parte_externa_de_la_cara).
-recomendacion(cordales,evitar_el_consumo_de_tabaco).
-recomendacion(cordales,evitar_tomar_aspirina).
-recomendacion(cordales,mantener_una_correcta_higiene_bucal).
-
-recomendacion(dengue,consultar_al_medico_a_la_brevedad).
-recomendacion(dengue,evitar_automedicarse).
-recomendacion(dengue,evitar_aspirinas).
-recomendacion(dengue,beber_abundantes_liquidos).
-recomendacion(dengue,no_utilizar_medicacion_inyectable).
-
-recomendacion(zika,consultar_al_medico_a_la_brevedad).
-recomendacion(zika,evitar_automedicarse).
-recomendacion(zika,evitar_aspirinas).
-recomendacion(zika,beber_abundantes_liquidos).
-recomendacion(zika,no_utilizar_medicacion_inyectable).
-
-recomendacion(asma,evitar_esfuerzos_intensos).
-recomendacion(asma,seguir_el_tratamiento_recetado_por_su_especialista).
-recomendacion(asma,reconoces_los_sintomas_de_Agudizacion_de_la_enfermedad).
-recomendacion(asma,utilizar_el_inhalador_correctamente).
-
-recomendacion(sarampion,descansar).
-recomendacion(sarampion,beber_abundantes_liquidos).
-recomendacion(sarampion,descansar_la_vista_de_luces_brillantes).
-recomendacion(sarampion,evitar_ir_a_lugares_concurridos).
+prevencion(cordales,[aplicar,hielo,en,la,parte,externa,de,la,cara,evitar,el,consumo,de,tabaco,evitar,tomar,aspirina,mantener,una,correcta,higiene,bucal]).
 
 %causas
-causa(gripe,virus_de_la_influenza).
-causa(gripe,contacto_con_personas_infectadas).
+causa(gripe,[virus,de,la,influenza,o,contacto,con,personas,infectadas]).
 
-causa(vertigo,infecciones_de_oido).
-causa(vertigo,regulacion_anormal_de_la_presion_arterial).
-causa(vertigo,trastornos_neurologicos).
+causa(vertigo,[infecciones,de,oido,o,regulacion,anormal,de,la,presion,arterial,o,trastornos,neurologicos]).
 
-causa(colitis,infecciones_causadas_por_virus_o_paracitos).
-causa(colitis,intoxicacion_alimentaria).
+causa(colitis,[infecciones,causadas,por,virus,o,paracitos,o,intoxicacion,alimentaria]).
 
-causa(cordales,falta_de_espacio_en_la_boca).
+causa(cordales,[falta,de,espacio,en,la,boca,al,momento,de,salir,el,diente]).
 
-causa(dengue,mosquitos).
+causa(dengue,[picadura,de,mosquitos]).
 
-causa(zika,mosquitos).
+causa(zika,[picadura,de,mosquitos]).
 
-causa(asma,inflamacion_de_las_vias_respiratorias).
+causa(asma,[inflamacion,de,las,vias,respiratorias]).
 
-causa(sarampion,virus_del_sarampion).
-causa(sarampion,contacto_con_personas_infectadas).
+causa(sarampion,[puede,ser,virus,del,sarampion,o,el,contacto,con,personas,infectadas]).
 
 %tratamiento
-tratamiento(gripe,analgesicos_habituales_como_paracetamol_e_ibuprofeno).
+tratamiento(gripe,[analgesicos,habituales,como,paracetamol,e,ibuprofeno]).
 
-tratamiento(vertigo,diureticos).
-tratamiento(vertigo,betahistina).
+tratamiento(vertigo,[tomar,diureticos,y,betahistina]).
 
-tratamiento(colitis,antiinflamatorios).
-tratamiento(colitis,analgesicos).
-tratamiento(colitis,suplementos_de_hierro).
-tratamiento(colitis,cirugia).
+tratamiento(colitis,[tomar,antiinflamatorios,analgesicos,suplementos,de,hierro]).
 
-tratamiento(cordales,extraccion).
+tratamiento(cordales,[lo,mejor,es,una,extraccion]).
 
-tratamiento(dengue,liquidos_en_caso_de_deshidratacion).
-tratamiento(dengue,paracetamol).
-tratamiento(dengue,reposo).
+tratamiento(dengue,[tomar,liquidos,en,caso,de,deshidratacion,y,paracetamol,ademas,de,reposo]).
 
-tratamiento(zika,liquidos_en_caso_de_deshidratacion).
-tratamiento(zika,paracetamol).
-tratamiento(zika,reposo).
+tratamiento(zika,[tomar,liquidos,en,caso,de,deshidratacion,y,paracetamol,ademas,de,reposo]).
 
-tratamiento(asma,corticoesteroides_inhalados).
-tratamiento(asma,broncodilatadores).
-tratamiento(asma,ipratropio).
-tratamiento(asma,termoplastia_bronquial).
+tratamiento(asma,[corticoesteroides,inhalados,broncodilatadores,ipratropio,y,termoplastia_bronquial]).
 
-tratamiento(sarampion,antitermicos).
-tratamiento(sarampion,antitusigenos).
-tratamiento(sarampion,reposo).
+tratamiento(sarampion,[tomar,antitermicos,antitusigenos,reposo]).
 
 pregunta_enfermedad(X,Y,Z,Enfermedad):-
     enfermedad(Enfermedad,X),
@@ -292,57 +325,151 @@ pregunta_enfermedad(X,Y,Z,Enfermedad):-
 % elimine la comprobacion de sintomas ya que en la funcion de
 % busqueSintomas compruebo que son sintomas lo que ingresa
 
-/*crea una lista de átomos. Donde SL es una lista original y L es la list *a a devolver que es la inversa de SL.
-*/
-atomList(SL, L):- toAtom(SL, [], Y), reverse(L, Y).
-
-/*Una función que crea átomos para la lista átomos. Donde la primera Y es la función de parada. Y en la segunda, X es la cabeza, Cola es la cola,  Y
- */
-toAtom([],Y, Y).
-
-toAtom([X|Cola], Y, Z):- atom_string(A, X), toAtom(Cola, [A|Y], Z).
-
 
 %Gramaticas libres de Contexto
 %
 %Inicia el programa, no inicia hasta que reciba un saludo
 
-drLog(Paciente,Doctor):-drLogStart(Paciente,Doctor).
+drLogStart:-write("Hola, este es Doctor Log "),read(SalAux),inicio(SalAux),write("que lo trae a mi consultorio? "),pregunteSintomas.
+drLogStart:-write("No entiendo, repite de nuevo "),drLogStart.
 
-drLogStart(SalAux,SalDoc):-atom_string(Sal,SalAux),saludo(Sal),string_concat(SalAux,", que lo trae a mi consultorio?",SalDoc).
-drLogStart(SalAux,SalDoc):-atom_string(Sal,SalAux),not(saludo(Sal)),string_concat("","No entiendo, repita de nuevo.",SalDoc).
-
-
-drLogStart:-read(SalAux),atom_string(Sal,SalAux),saludo(Sal),write("Hola, que lo trae a mi consultorio?"),pregunteSintomas.
-drLogStart:-write("No entiendo, repite de nuevo"),drLogStart.
+drLogSintomas(Paciente,Doctor):-pregunteSintomas(Paciente,Doctor).
+drLogRecomendacion(Enfermedad,Doctor):-digaRecomendacion(Enfermedad,Doctor).
+drLogCausa(Enfermedad,Doctor):-digaCausa(Enfermedad,Doctor).
+drLogConsejos(Enfermedad,Doctor):-digaConsejos(Enfermedad,Doctor).
 
 % recibe una oracion, la vuelve una lista y busca los sintomas en dicha
 % oracion
 %***IMPORTANTE: LA ORACION DEBE ESTAR ENTRE COMILLAS ("")
-
-drLogSintomas(Paciente,Doctor):-pregunteSintomas(Paciente,Doctor).
-
-pregunteSintomas(OracionAux,OracionDoc):-atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas,OracionDoc).
-
-
-pregunteSintomas:-read(OracionAux),atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas).
-pregunteSintomas:-write("No entiendo, repita de nuevo lo que tiene"),pregunteSintomas.
+pregunteSintomas(OracionAux,OracionDoc):-inicio(OracionAux),atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas,OracionDoc).
+pregunteSintomas:-read(OracionAux),inicio(OracionAux),atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas).
+pregunteSintomas:-read(OracionAux),inicio(OracionAux),write("Por favor digame al menos 3 sintomas que tiene: "),pregunteSintomas.
+pregunteSintomas:-write("No entiendo, repita de nuevo lo que tiene "),pregunteSintomas.
 
 % obtiene los primeros 3 valores de la lista de sintomas y los ingresa
 % al deductor, lo que devuelve una enfermedad, la concatena con la linea
 % que dice que tiene y imprime el diagnostico.
+digaEnfermedad(ListaSintomas,DiagnosticoDoc):-primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,DiagnosticoDoc).
 
-digaEnfermedad(ListaSintomas,DiagnosticoDoc):-primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,Enfermedad),atom_string(Enfermedad,EnfermedadString),string_concat("Parece que tiene ",EnfermedadString,DiagnosticoDoc).
-
-digaEnfermedad(ListaSintomas):-primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,Enfermedad),atom_string(Enfermedad,EnfermedadString),string_concat("Parece que tiene ",EnfermedadString,Diagnostico),write(Diagnostico).
+digaEnfermedad(ListaSintomas):-length(ListaSintomas,3),primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,Enfermedad),atom_string(Enfermedad,EnfermedadString),string_concat("Parece que tiene ",EnfermedadString,Diagnostico),write(Diagnostico),digaRecomendacion(Enfermedad).
+digaEnfermedad(ListaSintomas):-not(length(ListaSintomas,3)),write("Datos insuficientes, por favor digame al menos 3 sintomas que tiene"),pregunteSintomas.
 
 %busca sintomas en una lista
 busqueSintomas([],Y,Y). %caso base, lista vacia
-busqueSintomas([X|Cola], Y, Z):-sintoma(X),busqueSintomas(Cola,[X|Y], Z). %si el inicio es un sintoma lo mete a la lista
-busqueSintomas([X|Cola], Y, Z):-not(sintoma(X)),busqueSintomas(Cola,Y, Z). %sino, lo omite
+busqueSintomas([X|Cola], Y, Z):-sintoma(X),not(length(Y,3)),busqueSintomas(Cola,[X|Y],Z). %si el inicio es un sintoma lo mete a la lista
+busqueSintomas([X|Cola], Y, Z):-sintoma(X),length(Y,3),busqueSintomas(Cola,Y,Z).%si el largo es 3 sintomas, deja de agregar sintomas
+busqueSintomas([X|Cola], Y, Z):-not(sintoma(X)),busqueSintomas(Cola,Y,Z). %sino, lo omite
+
+digaRecomendacion(Enfermedad,Doctor):-read(OracionAux),inicio(OracionAux),tratamiento(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("Vas a tomar: ",X,Doctor).
+digaRecomendacion(Enfermedad):-read(OracionAux),inicio(OracionAux),tratamiento(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("Vas a tomar: ",X,Tratamiento),write(Tratamiento),digaCausa(Enfermedad).
+digaCausa(Enfermedad,Doctor):-read(OracionAux),inicio(OracionAux),causa(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La causa es: ",X,Doctor).
+digaCausa(Enfermedad):-read(OracionAux),inicio(OracionAux),causa(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La causa es: ",X,Causa),write(Causa),digaConsejos(Enfermedad).
+digaConsejos(Enfermedad,Doctor):-read(OracionAux),inicio(OracionAux),prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La recomendacion es: ",X,Doctor).
+digaConsejos(Enfermedad):-read(OracionAux),inicio(OracionAux),prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La recomendacion es: ",X,Consejo),write(Consejo),despedirse.
+despedirse:-read(Despedida),inicio(Despedida),write("buenas noches").
+
 
 %Obtiene los objetos en las posiciones respectivas de una lista
 primero([E|_],E).
 segundo([_,E|_],E).
 tercero([_,_,E|_],E).
+
+inicio(X):-atomic_list_concat(L,' ',X),oracion(L,[]).
+oracion(L,S):-sintaxis_despedida(L,S).
+oracion(L,S):-sintaxis_saludo(L,S).
+oracion(L,S):-sintaxis_nominal(L,X),sintaxis_verbal(X,S).
+oracion(L,S):-sintaxis_verbal(L,S).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
