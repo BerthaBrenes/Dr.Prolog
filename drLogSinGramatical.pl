@@ -52,20 +52,19 @@ verbo([tomo|S],S).
 verbo([compro|S],S).
 verbo([prevenirla|S],S).
 verbo([causa|S],S).
+verbo([provoca|S],S).
+verbo([provoco|S],S).
 verbo([es|S],S).
+verbo([prevenir|S],S).
+verbo([puedo|S],S).
 
-% Aqui se va a colocar la composicion de una oracion para lograr identificar las partes de la oracion.
-% Pronombres
-pronombre(el).
-pronombre(ella).
-pronombre(ella).
-pronombre(yo).
 
 %preguntas 
 preguntas([que|S],S).
 preguntas([como|S],S).
 preguntas([cuando|S],S).
 preguntas([donde|S],S).
+preguntas([cual|S],S).
 
 
 % Articulos
@@ -74,6 +73,7 @@ articulo(la).
 articulo(las).
 articulo(los).
 articulo([el|S],S).
+For help, use ?- help(
 articulo([lo|S],S).
 articulo([la|S],S).
 articulo([las|S],S).
@@ -82,7 +82,7 @@ articulo([me|S],S).
 articulo([un|S],S).
 articulo([una|S],S).
 articulo([debo|S],S).
-articulo([puedo|S],S).
+articulo([el|S],S).
 
 
 %Nombres
@@ -107,8 +107,12 @@ sintaxis_nominal(Z,S):-nombre(Z,S).
 sintaxis_verbal(Z,S):-verbo(Z,Y),sintaxis_verbal(Y,S).
 sintaxis_verbal(Z,S):-verbo(Z,Y), sintaxis_nominal(Y,S).
 sintaxis_verbal(Z,S):-verbo(Z,Y),sintoma(Y,S).
+
+%sintaxis preguntas
 sintaxis_verbal(Z,S):-preguntas(Z,X),articulo(X,Y),verbo(Y,S).
 sintaxis_verbal(Z,S):-preguntas(Z,X),verbo(X,Y),articulo(Y,V),verbo(V,S).
+sintaxis_verbal(Z,S):-preguntas(Z,X),verbo(X,Y),verbo(Y,S).
+sintaxis_verbal(Z,S):-preguntas(Z,X),articulo(X,Y),verbo(Y,V),verbo(V,S).
 %sintaxis saludo
 sintaxis_saludo(Z,S):-saludo(Z,Y),nombre(Y,S).
 sintaxis_saludo(Z,S):-saludo(Z,Y),saludo(Y,X),nombre(X,S).
@@ -265,133 +269,55 @@ pregunta(donde).
 pregunta(cuanto).
 
 %prevencion
-prevencion(vertigo,no_salir_de_la_casa).
-prevencion(vertigo,someterse_a_revisiones_auditivas_periodicas).
-prevencion(vertigo,mantener_una_buena_postura_corporal).
+prevencion(vertigo,[no,salir,de,la,casa,someterse,a,revisiones,auditivas,periodicas,mantener,una,buena,postura,corporal,evitar,cambios,subitos,de,posicion]).
 
-prevencion(gripe,no_estar_cerca_de_la_suciedad).
-prevencion(gripe,tener_todas_las_vacunas_al_dia).
-prevencion(gripe,evitar_contacto_con_personas_con_gripe_o_fiebre).
-prevencion(gripe,abrigarse_bien).
+prevencion(colitis,[mantener,una,dieta,balanceada,controlar,el,estres,tomar,al,menos,8,vasos,de,liquido,al,dia,mantener,horario,fijo,de,comidas]).
 
-prevencion(colitis,mantener_una_dieta_balanceada).
-prevencion(colitis,evitar_el_tabaco).
-prevencion(colitis,controlar_el_estres).
-prevencion(colitis,no_dejar_tratamientos_a_medias).
+prevencion(dengue,[evitar,recipientes,con,agua,acomulada,utilizar,repelentes,evitar,automedicarse,por,ultimo,beber,abundantes,liquidos]).
 
-prevencion(cordales,no_tomar_cosas_calientes).
+prevencion(zika,[evitar,recipientes,con,agua,acomulada,utilizar,repelentes,evitar,automedicarse,por,ultimo,beber,abundantes,liquidos]).
 
-prevencion(dengue,evitar_recipientes_con_agua_acomulada).
-prevencion(dengue,instalar_mosquiteros).
-prevencion(dengue,utilizar_repelentes).
+prevencion(asma,[evitar,el,polvo,cubrir,las,camas,con,fundas,antialergicas,mantener,los,niveles,de,humedad,bajos,seguir,el,tratamiento,recetado,siempre,utilizar,el,inhalador,correctamente]).
 
-prevencion(zika,evitar_recipientes_con_agua_acumulada).
-prevencion(zika,instalar_mosquiteros).
-prevencion(zika,utilizar_repelentes).
+prevencion(sarampion,[evitar,contacto,con,personas,contagiadas,mantener,vacunas,al,dia,beber,abundantes,liquidos,evitar,ir,a,lugares,concurridos]).
 
-prevencion(asma,evitar_el_polvo).
-prevencion(asma,realizar_ejercicios_respiratoris_habituales).
-prevencion(asma,cubrir_las_camas_con_fundas_antialergicas).
-prevencion(asma,mantener_los_niveles_de_humedad_bajos).
+prevencion(gripe,[descansar,beber,abundante,liquidos,evitar,consumo,de,tabaco,o,alcohol,y,comer,frutas]).
 
-prevencion(sarampion,evitar_contacto_con_personas_contagiadas).
-prevencion(sarampion,mantener_vacunas_al_dia).
-
-%recomendacion
-recomendacion(vertigo,mantenerse_quieto).
-recomendacion(vertigo,sentarse_o_acostarse_durante_los_sintomas).
-recomendacion(vertigo,evitar_cambios_subitos_de_posicion).
-recomendacion(vertigo,no_intentar_leer_durante_los_sintomas).
-recomendacion(vertigo,evitar_las_luces_brillantes).
-
-recomendacion(gripe,descansar).
-recomendacion(gripe,beber_abundantes_liquidos).
-recomendacion(gripe,evitar_el_consumo_de_tabaco_y_alcohol).
-recomendacion(gripe,comer_frutas_y_verduras).
-
-recomendacion(colitis,tomar_al_menos_8_vasos_de_liquido_al_dia).
-recomendacion(colitis,masticar_bien).
-recomendacion(colitis,mantener_horario_fijo_de_comidas).
-recomendacion(colitis,realizar_ejercicio).
-
-recomendacion(cordales,aplicar_hielo_en_la_parte_externa_de_la_cara).
-recomendacion(cordales,evitar_el_consumo_de_tabaco).
-recomendacion(cordales,evitar_tomar_aspirina).
-recomendacion(cordales,mantener_una_correcta_higiene_bucal).
-
-recomendacion(dengue,consultar_al_medico_a_la_brevedad).
-recomendacion(dengue,evitar_automedicarse).
-recomendacion(dengue,evitar_aspirinas).
-recomendacion(dengue,beber_abundantes_liquidos).
-recomendacion(dengue,no_utilizar_medicacion_inyectable).
-
-recomendacion(zika,consultar_al_medico_a_la_brevedad).
-recomendacion(zika,evitar_automedicarse).
-recomendacion(zika,evitar_aspirinas).
-recomendacion(zika,beber_abundantes_liquidos).
-recomendacion(zika,no_utilizar_medicacion_inyectable).
-
-recomendacion(asma,evitar_esfuerzos_intensos).
-recomendacion(asma,seguir_el_tratamiento_recetado_por_su_especialista).
-recomendacion(asma,reconoces_los_sintomas_de_Agudizacion_de_la_enfermedad).
-recomendacion(asma,utilizar_el_inhalador_correctamente).
-
-recomendacion(sarampion,descansar).
-recomendacion(sarampion,beber_abundantes_liquidos).
-recomendacion(sarampion,descansar_la_vista_de_luces_brillantes).
-recomendacion(sarampion,evitar_ir_a_lugares_concurridos).
+prevencion(cordales,[aplicar,hielo,en,la,parte,externa,de,la,cara,evitar,el,consumo,de,tabaco,evitar,tomar,aspirina,mantener,una,correcta,higiene,bucal]).
 
 %causas
-causa(gripe,virus_de_la_influenza).
-causa(gripe,contacto_con_personas_infectadas).
+causa(gripe,[virus,de,la,influenza,o,contacto,con,personas,infectadas]).
 
-causa(vertigo,infecciones_de_oido).
-causa(vertigo,regulacion_anormal_de_la_presion_arterial).
-causa(vertigo,trastornos_neurologicos).
+causa(vertigo,[infecciones,de,oido,o,regulacion,anormal,de,la,presion,arterial,o,trastornos,neurologicos]).
 
-causa(colitis,infecciones_causadas_por_virus_o_paracitos).
-causa(colitis,intoxicacion_alimentaria).
+causa(colitis,[infecciones,causadas,por,virus,o,paracitos,o,intoxicacion,alimentaria]).
 
-causa(cordales,falta_de_espacio_en_la_boca).
+causa(cordales,[falta,de,espacio,en,la,boca,al,momento,de,salir,el,diente]).
 
-causa(dengue,mosquitos).
+causa(dengue,[picadura,de,mosquitos]).
 
-causa(zika,mosquitos).
+causa(zika,[picadura,de,mosquitos]).
 
-causa(asma,inflamacion_de_las_vias_respiratorias).
+causa(asma,[inflamacion,de,las,vias,respiratorias]).
 
-causa(sarampion,virus_del_sarampion).
-causa(sarampion,contacto_con_personas_infectadas).
+causa(sarampion,[puede,ser,virus,del,sarampion,o,el,contacto,con,personas,infectadas]).
 
 %tratamiento
-tratamiento(gripe,analgesicos_habituales_como_paracetamol_e_ibuprofeno).
+tratamiento(gripe,[analgesicos,habituales,como,paracetamol,e,ibuprofeno]).
 
-tratamiento(vertigo,diureticos).
-tratamiento(vertigo,betahistina).
+tratamiento(vertigo,[tomar,diureticos,y,betahistina]).
 
-tratamiento(colitis,antiinflamatorios).
-tratamiento(colitis,analgesicos).
-tratamiento(colitis,suplementos_de_hierro).
-tratamiento(colitis,cirugia).
+tratamiento(colitis,[tomar,antiinflamatorios,analgesicos,suplementos,de,hierro]).
 
-tratamiento(cordales,extraccion).
+tratamiento(cordales,[lo,mejor,es,una,extraccion]).
 
-tratamiento(dengue,liquidos_en_caso_de_deshidratacion).
-tratamiento(dengue,paracetamol).
-tratamiento(dengue,reposo).
+tratamiento(dengue,[tomar,liquidos,en,caso,de,deshidratacion,y,paracetamol,ademas,de,reposo]).
 
-tratamiento(zika,liquidos_en_caso_de_deshidratacion).
-tratamiento(zika,paracetamol).
-tratamiento(zika,reposo).
+tratamiento(zika,[tomar,liquidos,en,caso,de,deshidratacion,y,paracetamol,ademas,de,reposo]).
 
-tratamiento(asma,corticoesteroides_inhalados).
-tratamiento(asma,broncodilatadores).
-tratamiento(asma,ipratropio).
-tratamiento(asma,termoplastia_bronquial).
+tratamiento(asma,[corticoesteroides,inhalados,broncodilatadores,ipratropio,y,termoplastia_bronquial]).
 
-tratamiento(sarampion,antitermicos).
-tratamiento(sarampion,antitusigenos).
-tratamiento(sarampion,reposo).
+tratamiento(sarampion,[tomar,antitermicos,antitusigenos,reposo]).
 
 pregunta_enfermedad(X,Y,Z,Enfermedad):-
     enfermedad(Enfermedad,X),
@@ -409,20 +335,21 @@ atomList(SL, L):- toAtom(SL, [], Y), reverse(L, Y).
 toAtom([],Y, Y).
 
 toAtom([X|Cola], Y, Z):- atom_string(A, X), toAtom(Cola, [A|Y], Z).
-digaRecomendacion(Enfermedad):-read(OracionAux),inicio(OracionAux),tratamiento(Enfermedad,X),string_concat("Vas a tomar: ",X,Tratamiento),write(Tratamiento),digaCausa(Enfermedad).
-digaCausa(Enfermedad):-read(OracionAux),inicio(OracionAux),causa(Enfermedad,X),string_concat("La causa es: ",X,Causa),write(Causa),digaRecomendacion.
-digaTratamiento(Enfermedad):-read(OracionAux),inicio(OracionAux),recomendacion(Enfermedad,X),string_concat("El tratamiento es: ",X,Causa),write(Causa),read(despedida),inicio(despedida).
+digaRecomendacion(Enfermedad):-read(OracionAux),inicio(OracionAux),tratamiento(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("Vas a tomar: ",X,Tratamiento),write(Tratamiento),digaCausa(Enfermedad).
+digaCausa(Enfermedad):-read(OracionAux),inicio(OracionAux),causa(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La causa es: ",X,Causa),write(Causa),digaConsejos(Enfermedad).
+digaConsejos(Enfermedad):-read(OracionAux),inicio(OracionAux),prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("El recomendacion es: ",X,Consejo),write(Consejo),read(despedida),oracionDespedida(despedida,[]),write("hasta luego").
 
 
 inicio(X):-atomic_list_concat(L,' ',X),oracion(L,[]).
 oracion(L,S):-sintaxis_saludo(L,S).
 oracion(L,S):-sintaxis_nominal(L,X),sintaxis_verbal(X,S).
 oracion(L,S):-sintaxis_verbal(L,S).
-oracion(L,S):-sintaxis_despedida(L,S).
+oracionDespedida(X,S):-atomic_list_concat(L,' ',X),sintaxis_despedida(L,S).
+
 %Gramaticas libres de Contexto
 %
 %Inicia el programa, no inicia hasta que reciba un saludo
-drLogStart:-write("Hola, este es Doctor Log"),read(SalAux),inicio(SalAux),write("Hola, que lo trae a mi consultorio?"),pregunteSintomas.
+drLogStart:-write("Hola, este es Doctor Log"),read(SalAux),inicio(SalAux),write("que lo trae a mi consultorio?"),pregunteSintomas.
 drLogStart:-write("No entiendo, repite de nuevo"),drLogStart.
 
 % recibe una oracion, la vuelve una lista y busca los sintomas en dicha
