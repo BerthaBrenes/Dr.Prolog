@@ -3,6 +3,9 @@ saludo(disculpe).
 saludo(buenos_dias).
 saludo(buenas_tardes).
 saludo(buenas_noches).
+
+saludoDoctor(hola_que_lo_trae_a_mi_consultorio).
+noEntiendo(no_entiendo_lo_que_me_dice_por_favor_repita).
 %verbos
 verbo(tengo).
 verbo(tenia).
@@ -283,27 +286,63 @@ tratamiento(sarampion,antitusigenos).
 tratamiento(sarampion,reposo).
 
 pregunta_enfermedad(X,Y,Z,Enfermedad):-
-    sintoma(X),
-    sintoma(Y),
-    sintoma(Z),
     enfermedad(Enfermedad,X),
     enfermedad(Enfermedad,Y),
     enfermedad(Enfermedad,Z).
+% elimine la comprobacion de sintomas ya que en la funcion de
+% busqueSintomas compruebo que son sintomas lo que ingresa
+
+/*crea una lista de átomos. Donde SL es una lista original y L es la list *a a devolver que es la inversa de SL.
+*/
+atomList(SL, L):- toAtom(SL, [], Y), reverse(L, Y).
+
+/*Una función que crea átomos para la lista átomos. Donde la primera Y es la función de parada. Y en la segunda, X es la cabeza, Cola es la cola,  Y
+ */
+toAtom([],Y, Y).
+
+toAtom([X|Cola], Y, Z):- atom_string(A, X), toAtom(Cola, [A|Y], Z).
+
 
 %Gramaticas libres de Contexto
 %
-%
-inicio(X):-split_string(X," ","",L),oracion(L).
-oracion(L):-sintaxis_nominal(SN),sintaxis_verbal(SV),append(SN,SV,L).
+%Inicia el programa, no inicia hasta que reciba un saludo
 
-prueba:-read(X,Y,Z),pregunta_enfermedad(X,Y,Z,Enfermedad),write(Enfermedad).
+drLog(Paciente,Doctor):-drLogStart(Paciente,Doctor).
 
-
-
+drLogStart(SalAux,SalDoc):-atom_string(Sal,SalAux),saludo(Sal),string_concat(SalAux,", que lo trae a mi consultorio?",SalDoc).
+drLogStart(SalAux,SalDoc):-atom_string(Sal,SalAux),not(saludo(Sal)),string_concat("","No entiendo, repita de nuevo.",SalDoc).
 
 
+drLogStart:-read(SalAux),atom_string(Sal,SalAux),saludo(Sal),write("Hola, que lo trae a mi consultorio?"),pregunteSintomas.
+drLogStart:-write("No entiendo, repite de nuevo"),drLogStart.
+
+% recibe una oracion, la vuelve una lista y busca los sintomas en dicha
+% oracion
+%***IMPORTANTE: LA ORACION DEBE ESTAR ENTRE COMILLAS ("")
+
+drLogSintomas(Paciente,Doctor):-pregunteSintomas(Paciente,Doctor).
+
+pregunteSintomas(OracionAux,OracionDoc):-atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas,OracionDoc).
 
 
+pregunteSintomas:-read(OracionAux),atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas).
+pregunteSintomas:-write("No entiendo, repita de nuevo lo que tiene"),pregunteSintomas.
 
+% obtiene los primeros 3 valores de la lista de sintomas y los ingresa
+% al deductor, lo que devuelve una enfermedad, la concatena con la linea
+% que dice que tiene y imprime el diagnostico.
 
+digaEnfermedad(ListaSintomas,DiagnosticoDoc):-primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,Enfermedad),atom_string(Enfermedad,EnfermedadString),string_concat("Parece que tiene ",EnfermedadString,DiagnosticoDoc).
+
+digaEnfermedad(ListaSintomas):-primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,Enfermedad),atom_string(Enfermedad,EnfermedadString),string_concat("Parece que tiene ",EnfermedadString,Diagnostico),write(Diagnostico).
+
+%busca sintomas en una lista
+busqueSintomas([],Y,Y). %caso base, lista vacia
+busqueSintomas([X|Cola], Y, Z):-sintoma(X),busqueSintomas(Cola,[X|Y], Z). %si el inicio es un sintoma lo mete a la lista
+busqueSintomas([X|Cola], Y, Z):-not(sintoma(X)),busqueSintomas(Cola,Y, Z). %sino, lo omite
+
+%Obtiene los objetos en las posiciones respectivas de una lista
+primero([E|_],E).
+segundo([_,E|_],E).
+tercero([_,_,E|_],E).
 

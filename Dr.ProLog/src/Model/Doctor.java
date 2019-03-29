@@ -19,10 +19,10 @@ public class Doctor {
     }
     public String getPhrase(String patientPhrase){
     	//Codigo a La Base de Datos
-        Query q1 = new Query("consult", new Term[] {new Atom("src/Model/test.pl")});
+        Query q1 = new Query("consult", new Term[] {new Atom("C:\\Users\\gababarca\\Desktop\\Dr.Prolog\\Dr.ProLog\\src\\Model\\drLogSinGramatical.pl")});
         if(q1.hasSolution()){
             Variable X = new Variable("X");
-            Query q2 =new Query("descendent_of", new Term[] {X,new Atom("ralf")});
+            Query q2 =new Query("drLogSintomas", new Term[] {new Atom(patientPhrase),X});
             
             java.util.Map<String,Term> solution;
             solution = q2.oneSolution();

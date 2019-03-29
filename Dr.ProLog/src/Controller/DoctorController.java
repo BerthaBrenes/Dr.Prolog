@@ -45,7 +45,7 @@ public class DoctorController extends HttpServlet {
 		
 		String[] Enfermedades = new String[6];
 		
-		Enfermedades[0] = doctor.getPhrase("Me Pica la Popola");
+		Enfermedades[0] = doctor.getPhrase(request.getParameter("usermsg"));
 		request.setAttribute("lista_enfermedades", Enfermedades);
 		
 		RequestDispatcher myDispatcher = request.getRequestDispatcher("/JavaView.jsp");
