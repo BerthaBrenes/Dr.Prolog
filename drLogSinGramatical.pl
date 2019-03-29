@@ -118,7 +118,7 @@ sintaxis_saludo(Z,S):-saludo(Z,Y),saludo(Y,X),nombre(X,S).
 
 sintaxis_despedida(Z,S):-despedida(Z,Y),nombre(Y,S).
 sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,S).
-sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,S),despedida(Z,Y),despedida(Y,X).
+sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,V),despedida(V,N),despedida(N,S).
 sintaxis_despedida(Z,S):-despedida(Z,Y),nombre(Y,X),despedida(X,V),despedida(V,S).
 sintaxis_despedida(Z,S):-despedida(Z,Y),despedida(Y,X),nombre(X,V),despedida(V,S).
 
@@ -337,13 +337,14 @@ toAtom([X|Cola], Y, Z):- atom_string(A, X), toAtom(Cola, [A|Y], Z).
 digaRecomendacion(Enfermedad):-read(OracionAux),inicio(OracionAux),tratamiento(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("Vas a tomar: ",X,Tratamiento),write(Tratamiento),digaCausa(Enfermedad).
 digaCausa(Enfermedad):-read(OracionAux),inicio(OracionAux),causa(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La causa es: ",X,Causa),write(Causa),digaConsejos(Enfermedad).
 digaConsejos(Enfermedad):-read(OracionAux),inicio(OracionAux),prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("El recomendacion es: ",X,Consejo),write(Consejo),despedirse.
-despedirse:-read(despedida),inicio(despedida),write("hasta luego").
+despedirse:-read(Despedida),inicio(Despedida),write("buenas noches").
 
 inicio(X):-atomic_list_concat(L,' ',X),oracion(L,[]).
+oracion(L,S):-sintaxis_despedida(L,S).
 oracion(L,S):-sintaxis_saludo(L,S).
 oracion(L,S):-sintaxis_nominal(L,X),sintaxis_verbal(X,S).
 oracion(L,S):-sintaxis_verbal(L,S).
-oracion(L,S):-sintaxis_despedida(L,S).
+
 
 %Gramaticas libres de Contexto
 %
