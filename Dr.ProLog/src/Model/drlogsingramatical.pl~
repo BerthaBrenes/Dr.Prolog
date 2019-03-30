@@ -358,7 +358,7 @@ busqueSintomas([X|Cola], Y, Z):-not(sintoma(X)),busqueSintomas(Cola,Y, Z). %sino
 
 digaRecomendacion(Enfermedad,Doctor):-tratamiento(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("Vas a tomar: ",X,Doctor).
 digaRecomendacion(Enfermedad):-read(OracionAux),inicio(OracionAux),tratamiento(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("Vas a tomar: ",X,Tratamiento),write(Tratamiento),digaCausa(Enfermedad).
-digaCausa(Enfermedad,Doctor):-causa(Enfermedad,L),atomic_list_concat(L,' ',Doctor).
+digaCausa(Enfermedad,Doctor):-causa(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La causa es: ",X,Doctor).
 digaCausa(Enfermedad):-read(OracionAux),inicio(OracionAux),causa(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La causa es: ",X,Causa),write(Causa),digaConsejos(Enfermedad).
 digaConsejos(Enfermedad,Doctor):-prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La recomendacion es: ",X,Doctor).
 digaConsejos(Enfermedad):-read(OracionAux),inicio(OracionAux),prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La recomendacion es: ",X,Consejo),write(Consejo),despedirse.

@@ -52,17 +52,17 @@ public class DoctorController extends HttpServlet {
 			//Enviar a JSP
 			myDispatcher.forward(request, response);
 		}
-		else {
-			Enfermedades[1] = doctor.getCause(request.getParameter(Enfermedades[0]));//Causa
-			Enfermedades[2] = doctor.getSymptom(request.getParameter(Enfermedades[0]));//Sintomas
-			Enfermedades[3] = doctor.getTreatment(request.getParameter(Enfermedades[0]));//Tratamiento
-			Enfermedades[4] = doctor.getRecomendations(request.getParameter(Enfermedades[0]));//Recomendaciones Y Prevenciones
+		//else {
+			Enfermedades[1] = doctor.getCause(Enfermedades[0]);//Causa
+			Enfermedades[2] = doctor.getSymptom(Enfermedades[0]);//Sintomas
+			Enfermedades[3] = doctor.getTreatment(Enfermedades[0]);//Tratamiento
+			Enfermedades[4] = doctor.getRecomendations(Enfermedades[0]);//Recomendaciones Y Prevenciones
 			request.setAttribute("lista_enfermedades", Enfermedades);
 			
 			RequestDispatcher myDispatcher = request.getRequestDispatcher("/JavaView.jsp");			
 			//Enviar a JSP
 			myDispatcher.forward(request, response);
-		}
+		//}
 		
 	}
 

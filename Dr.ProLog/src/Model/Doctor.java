@@ -11,7 +11,7 @@ import java.util.LinkedList;
 public class Doctor {
     private static Doctor doctor = null;
     private LinkedList<Sickness> sicknesses; 
-    private String direc = "C:\\Users\\gababarca\\Desktop\\Dr.Prolog\\Dr.ProLog\\src\\Model\\drLogSinGramatical.pl";
+    private String direc = "C:\\Users\\fmuri\\Desktop\\drLog\\Dr.Prolog\\Dr.ProLog\\src\\Model\\drLogSinGramatical.pl";
     private Doctor(){
     	this.setSicknesses(new LinkedList<Sickness>()); ;
     }
@@ -82,7 +82,7 @@ public class Doctor {
             	for(Sickness sick : sicknesses)
             	{
             		if (sick.getName() == sickness)
-            			return sick.getSymptom().toString();
+            			return ArrayToString(sick.getSymptom());
             	}
             	return null;
             }else {
@@ -147,7 +147,7 @@ public class Doctor {
 		this.sicknesses = sicknesses;
 	}
 	private String SearchBySymptoms(String evaluate) {
-		String [] sickness = evaluate.split(",");
+		String [] sickness = evaluate.split(" ");
 		
 		for (Sickness sick : sicknesses) {
 			Object[] arr1 = {sick.getSymptom()};
@@ -159,5 +159,10 @@ public class Doctor {
 			
 			
 	}
-    
+    private String ArrayToString(String[] arr) {
+    	String str = "";
+    	for (String strArr:arr)
+    		str+=", "+strArr;
+    	return str;
+    }
 }

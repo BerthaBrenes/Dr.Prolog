@@ -325,54 +325,44 @@ pregunta_enfermedad(X,Y,Z,Enfermedad):-
 % elimine la comprobacion de sintomas ya que en la funcion de
 % busqueSintomas compruebo que son sintomas lo que ingresa
 
-
 %Gramaticas libres de Contexto
 %
 %Inicia el programa, no inicia hasta que reciba un saludo
-
-drLogStart:-write("Hola, este es Doctor Log "),read(SalAux),inicio(SalAux),write("que lo trae a mi consultorio? "),pregunteSintomas.
-drLogStart:-write("No entiendo, repite de nuevo "),drLogStart.
 
 drLogSintomas(Paciente,Doctor):-pregunteSintomas(Paciente,Doctor).
 drLogRecomendacion(Enfermedad,Doctor):-digaRecomendacion(Enfermedad,Doctor).
 drLogCausa(Enfermedad,Doctor):-digaCausa(Enfermedad,Doctor).
 drLogConsejos(Enfermedad,Doctor):-digaConsejos(Enfermedad,Doctor).
 
+drLogStart:-write("Hola, este es Doctor Log"),read(SalAux),inicio(SalAux),write("que lo trae a mi consultorio?"),pregunteSintomas.
+drLogStart:-write("No entiendo, repite de nuevo"),drLogStart.
+
 % recibe una oracion, la vuelve una lista y busca los sintomas en dicha
 % oracion
 %***IMPORTANTE: LA ORACION DEBE ESTAR ENTRE COMILLAS ("")
-pregunteSintomas(OracionAux,OracionDoc):-inicio(OracionAux),atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas,OracionDoc).
-pregunteSintomas:-read(OracionAux),inicio(OracionAux),atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas).
-pregunteSintomas:-read(OracionAux),inicio(OracionAux),write("Por favor digame al menos 3 sintomas que tiene: "),pregunteSintomas.
-pregunteSintomas:-write("No entiendo, repita de nuevo lo que tiene "),pregunteSintomas.
+pregunteSintomas(OracionAux,OracionDoc):-atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas,OracionDoc).
+pregunteSintomas:-read(OracionAux),atomic_list_concat(OracionLista,' ',OracionAux),busqueSintomas(OracionLista,[],Sintomas),digaEnfermedad(Sintomas).
+pregunteSintomas:-read(OracionAux),inicio(OracionAux),write("que sintomas tiene"),pregunteSintomas.
+pregunteSintomas:-write("No entiendo, repita de nuevo lo que tiene"),pregunteSintomas.
 
 % obtiene los primeros 3 valores de la lista de sintomas y los ingresa
 % al deductor, lo que devuelve una enfermedad, la concatena con la linea
 % que dice que tiene y imprime el diagnostico.
 digaEnfermedad(ListaSintomas,DiagnosticoDoc):-primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,DiagnosticoDoc).
-
-digaEnfermedad(ListaSintomas):-length(ListaSintomas,3),primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,Enfermedad),atom_string(Enfermedad,EnfermedadString),string_concat("Parece que tiene ",EnfermedadString,Diagnostico),write(Diagnostico),digaRecomendacion(Enfermedad).
-digaEnfermedad(ListaSintomas):-not(length(ListaSintomas,3)),write("Datos insuficientes, por favor digame al menos 3 sintomas que tiene"),pregunteSintomas.
+digaEnfermedad(ListaSintomas):-primero(ListaSintomas,A),segundo(ListaSintomas,B),tercero(ListaSintomas,C),pregunta_enfermedad(A,B,C,Enfermedad),atom_string(Enfermedad,EnfermedadString),string_concat("Parece que tiene ",EnfermedadString,Diagnostico),write(Diagnostico),digaRecomendacion(Enfermedad).
 
 %busca sintomas en una lista
 busqueSintomas([],Y,Y). %caso base, lista vacia
-busqueSintomas([X|Cola], Y, Z):-sintoma(X),not(length(Y,3)),busqueSintomas(Cola,[X|Y],Z). %si el inicio es un sintoma lo mete a la lista
-busqueSintomas([X|Cola], Y, Z):-sintoma(X),length(Y,3),busqueSintomas(Cola,Y,Z).%si el largo es 3 sintomas, deja de agregar sintomas
-busqueSintomas([X|Cola], Y, Z):-not(sintoma(X)),busqueSintomas(Cola,Y,Z). %sino, lo omite
+busqueSintomas([X|Cola], Y, Z):-sintoma(X),busqueSintomas(Cola,[X|Y], Z). %si el inicio es un sintoma lo mete a la lista
+busqueSintomas([X|Cola], Y, Z):-not(sintoma(X)),busqueSintomas(Cola,Y, Z). %sino, lo omite
 
-digaRecomendacion(Enfermedad,Doctor):-read(OracionAux),inicio(OracionAux),tratamiento(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("Vas a tomar: ",X,Doctor).
+digaRecomendacion(Enfermedad,Doctor):-tratamiento(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("Vas a tomar: ",X,Doctor).
 digaRecomendacion(Enfermedad):-read(OracionAux),inicio(OracionAux),tratamiento(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("Vas a tomar: ",X,Tratamiento),write(Tratamiento),digaCausa(Enfermedad).
-digaCausa(Enfermedad,Doctor):-read(OracionAux),inicio(OracionAux),causa(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La causa es: ",X,Doctor).
+digaCausa(Enfermedad,Doctor):-causa(Enfermedad,L),atomic_list_concat(L,' ',Doctor).
 digaCausa(Enfermedad):-read(OracionAux),inicio(OracionAux),causa(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La causa es: ",X,Causa),write(Causa),digaConsejos(Enfermedad).
-digaConsejos(Enfermedad,Doctor):-read(OracionAux),inicio(OracionAux),prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La recomendacion es: ",X,Doctor).
+digaConsejos(Enfermedad,Doctor):-prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La recomendacion es: ",X,Doctor).
 digaConsejos(Enfermedad):-read(OracionAux),inicio(OracionAux),prevencion(Enfermedad,L),atomic_list_concat(L,' ',X),string_concat("La recomendacion es: ",X,Consejo),write(Consejo),despedirse.
 despedirse:-read(Despedida),inicio(Despedida),write("buenas noches").
-
-
-%Obtiene los objetos en las posiciones respectivas de una lista
-primero([E|_],E).
-segundo([_,E|_],E).
-tercero([_,_,E|_],E).
 
 inicio(X):-atomic_list_concat(L,' ',X),oracion(L,[]).
 oracion(L,S):-sintaxis_despedida(L,S).
@@ -380,96 +370,8 @@ oracion(L,S):-sintaxis_saludo(L,S).
 oracion(L,S):-sintaxis_nominal(L,X),sintaxis_verbal(X,S).
 oracion(L,S):-sintaxis_verbal(L,S).
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+%Obtiene los objetos en las posiciones respectivas de una lista
+primero([E|_],E).
+segundo([_,E|_],E).
+tercero([_,_,E|_],E).
 
