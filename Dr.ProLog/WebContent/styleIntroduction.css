@@ -1,0 +1,70 @@
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: darkcyan;;
+    position: absolute;
+    top:0px;
+    right: 8px;
+    width: 100%;
+    
+  }
+  li {
+    float: left;
+  }
+  li p{
+    padding-top: 0px;
+    margin-bottom: 0px;
+  }
+  
+  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  li a:hover:not(.active) {
+    background-color: darkcyan;
+    
+  }
+  
+  .active {
+    background-color: #4CAF50;
+}
+.title{
+    text-align: center;
+    position: relative;
+    left: 30%;
+    color: white;
+}
+.imgKirbi{
+    position: relative;
+    left: 20%; 
+}
+div{
+    margin-top: 80px;
+    width: 50%;
+    font-size: unset;
+    line-height: calc;
+    color: darkcyan;
+    position: relative;
+    left: 24%;
+    text-align: center;
+   
+}
+/* div p{
+    position: relative;
+    left: 15%;
+} */
+.button{
+    margin-top: 10px;
+   
+    color: black;
+}
+#wrapper{
+    margin-top: 20px;
+    
+}
