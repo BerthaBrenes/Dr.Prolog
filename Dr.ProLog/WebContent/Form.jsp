@@ -1,15 +1,24 @@
 <!-- <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%> -->
-
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html> -->
 <html>
 <head>
+<link href="Form.css" rel="stylesheet" type="text/css">
 <meta charset="ISO-8859-1">
 <title>Enter your sickness</title>
 </head>
 
 <body>
-<h1>
-Enfermedad no Encontrada, por favor inserte la informaci�n de su enfermedad</h1>
+    <ul>
+        <li><a class="active" href="Form.jsp">Agregar</a></li>
+        <li><a href="Introduction.jsp">Consultar</a></li>
+        <li class="title"><p text-center>Dr.Prolog</p></li>
+        <li class="imgKirbi"><img  src="kirbi.png" alt="kirbi" height="43" width="45" ></li>
+</ul>
+<div>
+    <h1>Esta pagina es para agregar informacion de su nueva enfermedad</h1>
+</div> 
+
 <form action="FormController" method= "post">
 	<div>
         <label for="name">Enfermedad:</label>
