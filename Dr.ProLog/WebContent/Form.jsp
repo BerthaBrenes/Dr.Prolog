@@ -1,6 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html>
+<!-- <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%> -->
+
 <html>
 <head>
 <meta charset="ISO-8859-1">
@@ -9,7 +9,7 @@
 
 <body>
 <h1>
-Enfermedad no Encontrada, por favor inserte la información de su enfermedad</h1>
+Enfermedad no Encontrada, por favor inserte la informaciï¿½n de su enfermedad</h1>
 <form action="FormController" method= "post">
 	<div>
         <label for="name">Enfermedad:</label>

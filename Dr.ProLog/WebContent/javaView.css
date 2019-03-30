@@ -48,23 +48,11 @@ div{
     margin-top: 80px;
     width: 50%;
     font-size: unset;
-    line-height: calc;
     color: darkcyan;
     position: relative;
     left: 24%;
     text-align: center;
    
 }
-/* div p{
-    position: relative;
-    left: 15%;
-} */
-.button{
-    margin-top: 10px;
-   
-    color: black;
-}
-#wrapper{
-    margin-top: 20px;
-    
-}
+
+
